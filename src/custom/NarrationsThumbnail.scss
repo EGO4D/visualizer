@@ -1,0 +1,82 @@
+.thumbnail-tag {
+    background-color: #ddd;
+    border: none;
+    color: black;
+    padding: 5px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 16px;
+}
+
+.thumbnail-tag-with-subtag {
+    display: inline-block;
+    cursor: pointer;
+    margin: 4px 2px;
+}
+
+.thumbnail-tag-with-subtag .pillbox-left{
+    border: none;
+    padding: 5px 15px 5px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    margin: 0 0 0 4px;
+    border-radius: 16px 0 0 16px;
+}
+
+.thumbnail-tag-with-subtag .pillbox-right{
+    background-color: #ddd;
+    border: none;
+    color: black;
+    padding: 5px 20px 5px 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    margin: 0 0 4px 0;
+    cursor: pointer;
+    border-radius: 0 16px 16px 0;
+}
+
+/* Using Color Palette from */
+/* https://coolors.co/palette/262949-045459-087353-abd96d-fbbf54-ee6b3b-ec0f47-a02c5d-700460 */
+
+.tag-av {
+    background-color: #ec0f47;
+    color: white;
+}
+
+.tag-fho_hands .tag-fho_lta .tag-fho_scod .tag-fho_sta {
+    background-color: #087353;
+    color: white;
+}
+
+.tag-moments {
+    background-color: #fbbf54;
+    color: white;
+}
+
+.tag-narrations {
+    background-color: #700460;
+    color: white;
+}
+
+.tag-nlq {
+    background-color: #045459;
+    color: white;
+}
+
+.tag-vq {
+    background-color: #ee6b3b;
+    color: white;
+}
+
+.tag-fho_hands,
+.tag-fho_lta,
+.tag-fho_scod,
+.tag-fho_sta {
+    background-color:#3c4177;
+    color: white;
+}

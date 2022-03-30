@@ -1,0 +1,19 @@
+.main-tabs {
+    margin: 15px 0;
+}
+
+.main-tabs .bp3-tab-list {
+    justify-content: center;
+}
+
+.nav-info-important {
+    color: rgba(110, 83, 220);
+}
+
+.bp3-tab:not([aria-disabled=true]):hover, .bp3-tab[aria-selected=true] {
+    color: rgba(110, 83, 220) !important;
+}
+
+.bp3-tab-indicator-wrapper .bp3-tab-indicator {
+    background-color: rgba(110, 83, 220) !important;
+}

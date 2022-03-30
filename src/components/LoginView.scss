@@ -1,0 +1,28 @@
+html, body {
+    background: white;
+}
+
+.login-main {
+    min-width: 100vw;
+    min-height: 100vh;
+    display:flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-dialog {
+    width: 80%;
+    max-width: 500px;
+}
+
+.login-button {
+    margin: 0.67em 0;
+}
+
+#login-show-password-button {
+    background-color: transparent !important;
+
+    &.bp3-button.bp3-minimal.bp3-intent-primary {
+        color: #6a52ca;
+    }
+}

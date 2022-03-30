@@ -1,0 +1,22 @@
+.react-filter-box {
+    height: 38px;
+    margin-bottom: 0;
+    flex: 10 1 auto;
+    border-radius: 0 4px 4px 0;
+    border-left: none;
+}
+
+.CodeMirror {
+    height: auto;
+}
+
+.bp3-navbar .filterbox-search-icon {
+    height: 38px;
+    padding: 0 10px 0 10px;
+    color: gray;
+    border-radius: 4px 0 0 4px;
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    display: flex;
+    align-items: center;
+}
