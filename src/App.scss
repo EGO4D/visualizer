@@ -23,12 +23,6 @@ code {
   color: #e3242b;
 }
 
-.navbar-wrapper {
-  /* width: 75vw; */
-  // margin: 0 auto;
-  height: 75px;
-}
-
 .all-item-view-search-bar {
   width: 60vw;
 }
@@ -40,7 +34,8 @@ textarea:focus,
 button:focus,
 div:focus,
 video:focus,
-span:focus {
+span:focus,
+rect:focus {
     outline: none;
 }
 

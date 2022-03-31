@@ -1,6 +1,7 @@
 // Copyright (c) Meta Platforms, Inc. and affiliates. All Rights Reserved.
 
 import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import { useMephistoReview } from "../shims/mephisto-review-hook";
 import {
   Button,
@@ -10,6 +11,7 @@ import {
   Alignment,
   Tabs,
   Tab,
+  Intent,
 } from "@blueprintjs/core";
 import { ALIGN_RIGHT } from "@blueprintjs/core/lib/esm/common/classes";
 import { GridCollection, JSONItem } from "../renderers";
@@ -21,6 +23,7 @@ import Analyze from "../custom/Panels/Analyze";
 
 import "./CollectionView.scss"
 import Browse from "../custom/Panels/Browse";
+import VersionHeader from "./VersionHeader";
 // import VideoDetail from "../custom/Panels/VideoDetail";
 
 
@@ -33,6 +36,7 @@ function CollectionView({
   const [page, setPage] = useState(pagination ? 1 : null);
   const [filteredData, setFilteredData] = useState([]);
   const [selectedTab, setSelectedTab] = useState('browse')
+  const history = useHistory();
 
   const { filterData, isFinished, isLoading, error, mode } =
     useMephistoReview({
@@ -54,9 +58,14 @@ function CollectionView({
     'analyze': 'Analyzing',
   }
 
+  const onImFeelingLuckyClick = () => {
+    history.push(`/${filteredData[Math.floor(Math.random()*filteredData.length)].video_uid}`)
+  }
+
   return (
     <>
-      <Navbar fixedToTop={true} className={"navbar-wrapper"}>
+      <VersionHeader />
+      <Navbar fixedToTop={true} className={"navbar-wrapper"} style={{height: '75px'}}>
         <div>
           <NavbarGroup className="navbar-header">
             <NavbarHeading>
@@ -68,7 +77,7 @@ function CollectionView({
           <NavbarGroup align={Alignment.CENTER}>
             <FilterBox filterData={filterData} setFilteredData={setFilteredData} />
             <CSVLink data={gen_export_csv(filteredData)} target="_blank" filename={'ego4d_viz_filtered_videos'} >
-              <Button align={ALIGN_RIGHT} style={{ flex: '1 1 auto', margin: '7px' }}>Export Video UIDs</Button>
+              <Button intent={Intent.PRIMARY} align={ALIGN_RIGHT} style={{ flex: '1 1 auto', margin: '7px' }}>Export Video UIDs</Button>
             </CSVLink>
           </NavbarGroup>
         </div>
@@ -79,9 +88,11 @@ function CollectionView({
               total_duration_seconds > 60 ? Math.round(total_duration_seconds / 60 * 100) / 100 + ' minutes' :
                 total_duration_seconds + ' seconds'
           }</span>.
+
+          {/* <Button intent={Intent.PRIMARY} align={ALIGN_RIGHT} style={{ flex: '1 1 auto', margin: '7px' }} onClick={onImFeelingLuckyClick}>Random Video</Button> */}
         </div>
       </Navbar>
-      <main className={`all-item-view mode-${mode}`} id="all-item-view-wrapper">
+      <main id="all-item-view-wrapper">
         <Tabs selectedTabId={selectedTab} onChange={setSelectedTab} animate={true} className={'main-tabs'}>
           <Tab id={'browse'} title={'Browse'} panel={
             <Browse {...{ setSelectedTab, itemRenderer, CollectionRenderer, isLoading, isFinished, filteredData, page, resultsPerPage, setPage, error, pagination }} />

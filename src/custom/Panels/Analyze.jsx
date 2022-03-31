@@ -151,9 +151,9 @@ export default function Analyze({ filteredData, filterData }) {
                 data={emb_data}
                 animate={false}
                 margin={{ top: 30, right: 200, bottom: 30, left: 60 }}
-                xScale={{ type: 'linear', min: '-200', max: '300' }}
+                xScale={{ type: 'linear', min: '-300', max: '300' }}
                 xFormat=">-.2f"
-                yScale={{ type: 'linear', min: 'auto', max: 'auto' }}
+                yScale={{ type: 'linear', min: '-175', max: '175' }}
                 yFormat=">-.2f"
                 blendMode="multiply"
                 nodeSize={8}

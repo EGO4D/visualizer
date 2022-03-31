@@ -16,6 +16,7 @@ import {
 import { JSONItem } from "../renderers/JSONItem";
 import { getHostname } from "../utils";
 import ErrorPane from "./ErrorPane";
+import VersionHeader from "./VersionHeader";
 
 const AppToaster = Toaster.create({
   className: "recipe-toaster",
@@ -57,8 +58,8 @@ function ItemView({
 
   return (
     <>
-      <Navbar fixedToTop={true}>
-        <div className="navbar-wrapper">
+      <VersionHeader />
+      <Navbar fixedToTop={true} className="navbar-wrapper">
           <NavbarGroup>
             {mode === "ALL" ? (
               <>
@@ -114,7 +115,6 @@ function ItemView({
               </Button>
             </NavbarGroup>
           )}
-        </div>
       </Navbar>
       <main className={`item-view mode-${mode}`}>
         {isLoading ? (

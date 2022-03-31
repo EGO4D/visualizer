@@ -1,5 +1,6 @@
-.main-tabs {
-    margin: 15px 0;
+#all-item-view-wrapper {
+    margin-top: 110px;
+    background: white;
 }
 
 .main-tabs .bp3-tab-list {
@@ -7,13 +8,13 @@
 }
 
 .nav-info-important {
-    color: rgba(110, 83, 220);
+    color: rgb(110, 83, 220);
 }
 
 .bp3-tab:not([aria-disabled=true]):hover, .bp3-tab[aria-selected=true] {
-    color: rgba(110, 83, 220) !important;
+    color: rgb(110, 83, 220) !important;
 }
 
 .bp3-tab-indicator-wrapper .bp3-tab-indicator {
-    background-color: rgba(110, 83, 220) !important;
+    background-color: rgb(110, 83, 220) !important;
 }

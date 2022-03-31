@@ -10,6 +10,7 @@ import { useMephistoReview } from "../../shims/mephisto-review-hook";
 import ErrorPane from "../../components/ErrorPane"
 
 import "./VideoDetail.scss";
+import TimeSegmentChart from "../../components/charts/TimeSegmentChart";
 
 export default function VideoDetail({ id }) {
     const {
@@ -19,6 +20,8 @@ export default function VideoDetail({ id }) {
         error,
     } = useMephistoReview({ taskId: id, hostname: getHostname() });
 
+    const [progress, setProgress] = React.useState(0);
+    const [duration, setDuration] = React.useState(0);
     const [playing, setPlaying] = useState(false);
     const [bboxes, setBboxes] = useState([{ label: 'test-bbox', x: 250.5, y: 300.50, width: 100, height: 100 }]);
     const canvasRef = useRef();
@@ -29,8 +32,6 @@ export default function VideoDetail({ id }) {
 
     const [isError, setError] = useState(false);
     const [selectedTab, setSelectedTab] = useState(null);
-
-    const activeAnnotations = [];
 
     const dimensions = data?.quick_info?.metadata?.dimensions.slice(1, -1).split(",").map(x => x.trim()).map(parseFloat);
 
@@ -62,7 +63,7 @@ export default function VideoDetail({ id }) {
                 canvasRef.current.height / 2
             );
         },
-        [canvasRef, bboxes]
+        [canvasRef, bboxes, dimensions]
     );
 
     function useRVFC(videoRef, canvasRef, steps) {
@@ -87,20 +88,35 @@ export default function VideoDetail({ id }) {
 
     // useRVFC(videoRef, canvasRef, [step]);
 
+    const segment_viewer = React.useMemo(() => {
+        return data && <div className="segment-viewer">
+            <h3>Info:</h3>
+            <JSONSpeedViewer data={data.quick_info} customRenderer={CustomLabelRenderer} videoRef={videoRef} setPlaying={setPlaying} />
+
+            <h3>Annotations:</h3>
+            <Tabs selectedTabId={selectedTab} onChange={setSelectedTab} animate={true}>
+                {
+                    Object.keys(data.annotations).map((k) =>
+                        <Tab id={k} title={k} key={k} panel={
+                            <div style={{ display: 'flex', height: '100%' }}>
+                                <JSONSpeedViewer data={data.annotations[k]} customRenderer={CustomLabelRenderer} videoRef={videoRef} setPlaying={setPlaying} />
+                            </div>
+                        } />
+                    )
+                }
+            </Tabs>
+        </div>
+    }, [selectedTab, data])
+
     const renderedItem = data && (
         <>
             <div className="app-container">
                 <div className="video-viewer">
-                    {isError ? (
+                    {/* {isError ? (
                         <Callout intent={Intent.WARNING} style={{ marginBottom: 10 }}>
-                            The video was not found. You may not have it downloaded. You can
-                            try downloading it with the Ego4D cli:
-                            <pre style={{ whiteSpace: "break-spaces" }}>
-                                python -m ego4d.cli.cli --yes --datasets full_scale
-                                --output_directory $OUTPUT_DIR --video_uids {data._uid}
-                            </pre>
+                            Error streaming video from S3.
                         </Callout>
-                    ) : null}
+                    ) : null} */}
                     <div className="video-stage">
                         <ReactPlayer
                             className={"video-player"}
@@ -111,12 +127,13 @@ export default function VideoDetail({ id }) {
                             width={'100%'}
                             height={'auto'}
                             progressInterval={350}
+                            onProgress={({ playedSeconds }) => {
+                                setProgress(playedSeconds);
+                              }}
+                            onDuration={setDuration}
                             onError={(error) => {
                                 console.log(error);
                                 setError(true);
-                            }}
-                            onProgress={({ playedSeconds }) => {
-                                // setProgress(playedSeconds);
                             }}
                             onPlay={() => setPlaying(true)}
                             onPause={() => setPlaying(false)}
@@ -124,24 +141,20 @@ export default function VideoDetail({ id }) {
 
                         <ResponsiveCanvas className={"video-canvas"} ref={canvasRef} reactPlayerRef={videoRef} scale={1.5} />
                     </div>
-                </div>
-                <div className="segment-viewer">
-                    <h3>Info:</h3>
-                    <JSONSpeedViewer data={data.quick_info} customRenderer={CustomLabelRenderer} videoRef={videoRef} setPlaying={setPlaying} />
 
-                    <h3>Annotations:</h3>
-                    <Tabs selectedTabId={selectedTab} onChange={setSelectedTab} animate={true}>
-                        {
-                            Object.keys(data.annotations).map((k) =>
-                                <Tab id={k} title={k} key={k} panel={
-                                    <div style={{ display: 'flex', height: '100%' }}>
-                                        <JSONSpeedViewer data={data.annotations[k]} customRenderer={CustomLabelRenderer} videoRef={videoRef} setPlaying={setPlaying} />
-                                    </div>
-                                } />
-                            )
-                        }
-                    </Tabs>
+                    {
+                        !!data.annotations[selectedTab]?.action_segments &&
+                           <TimeSegmentChart
+                            data={data.annotations[selectedTab].action_segments.map(({start_time, end_time, label}) => {return {start: start_time, end: end_time, label: label} })}
+                            seeker_position={progress}
+                            videoRef={videoRef}
+                            setPlaying={setPlaying}
+                            min={0}
+                            max={duration}
+                            />
+                    }
                 </div>
+                { segment_viewer }
             </div>
         </>
     );

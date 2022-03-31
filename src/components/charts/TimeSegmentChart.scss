@@ -1,0 +1,14 @@
+svg.focus-mode rect {
+    opacity:1; // TODO: make this 0.7 or remove
+}
+
+svg.focus-mode rect.active {
+    opacity:1;
+}
+
+.chart-tooltip {
+    background-color: #fff;
+    border-radius: 2px;
+    box-shadow: rgb(0 0 0 / 25%) 0px 1px 2px;
+    padding: 5px 9px;
+}
