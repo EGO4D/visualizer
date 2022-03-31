@@ -29,6 +29,12 @@ export const filter_options = [
         customOperatorFunc: (_category) => ['==', "!="]
     },
     {
+        columnField: "is_stereo",
+        type: "text",
+        customOperatorFunc: (_category) => ['==', "!="],
+        customValuesFunc: (_c, _o) => ['true', 'false'],
+    },
+    {
         columnField: "split_av",
         type: "text",
         customOperatorFunc: (_c) => ['==', '!='],

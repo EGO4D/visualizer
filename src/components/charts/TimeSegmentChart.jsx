@@ -36,7 +36,7 @@ export default function TimeSegmentChart({ data, seeker_position, videoRef, setP
 
     max = max ?? data_max;
     min = min ?? data_min;
-    const range = max-min;
+    const range = max-min || 0.000000000001; // TODO: replace this magic number
 
     const onSegmentClick = (start, e) => {
         e.stopPropagation();

@@ -6,6 +6,10 @@ svg.focus-mode rect.active {
     opacity:1;
 }
 
+svg text {
+    user-select: none;
+}
+
 .chart-tooltip {
     background-color: #fff;
     border-radius: 2px;
