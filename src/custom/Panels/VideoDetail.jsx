@@ -2,7 +2,6 @@ import React, { useCallback, useRef, useEffect, useState } from "react";
 import ReactPlayer from "react-player"; /* dependency */
 import JSONSpeedViewer from "../JSONSpeedViewer";
 import CustomLabelRenderer from "../CustomLabelRenderer";
-import { Callout, Intent } from "@blueprintjs/core";
 import { Tab, Tabs } from "@blueprintjs/core";
 import ResponsiveCanvas from "../Utility/ResponsiveCanvas";
 import { getHostname } from "../../utils";
@@ -99,7 +98,7 @@ export default function VideoDetail({ id }) {
                     Object.keys(data.annotations).map((k) =>
                         <Tab id={k} title={k} key={k} panel={
                             <div style={{ display: 'flex', height: '100%' }}>
-                                <JSONSpeedViewer data={data.annotations[k]} customRenderer={CustomLabelRenderer} videoRef={videoRef} setPlaying={setPlaying} />
+                                <JSONSpeedViewer data={data.annotations[k]} customRenderer={CustomLabelRenderer} videoRef={videoRef} setPlaying={setPlaying} expandThreshold={26} />
                             </div>
                         } />
                     )
@@ -107,6 +106,26 @@ export default function VideoDetail({ id }) {
             </Tabs>
         </div>
     }, [selectedTab, data])
+
+    const timelines = data?.annotations[selectedTab] && Object.keys(data.annotations[selectedTab]).map(
+        (k) => {
+            const v = data.annotations[selectedTab][k];
+            const time_segs = v.constructor === Array && v.filter((vchild) => vchild._type === 'time_segment');
+            return !!time_segs && time_segs.length > 0 && (
+                <div key={`video-${k}`}>
+                    <span>{k}</span>
+                    <TimeSegmentChart
+                        data={time_segs.map(({start_time, end_time, label}) => {return {start: start_time, end: end_time, label: label} })}
+                        seeker_position={progress}
+                        videoRef={videoRef}
+                        setPlaying={setPlaying}
+                        min={0}
+                        max={duration}
+                    />
+                </div>
+            )
+        }
+    )
 
     const renderedItem = data && (
         <>
@@ -142,7 +161,11 @@ export default function VideoDetail({ id }) {
                         <ResponsiveCanvas className={"video-canvas"} ref={canvasRef} reactPlayerRef={videoRef} scale={1.5} />
                     </div>
 
-                    {
+                    {/* Generate a timeline for every first child that's time segments */}
+                    <div className="video-visualizers">
+                        { timelines }
+                    </div>
+                    {/* {
                         !!data.annotations[selectedTab]?.action_segments &&
                            <TimeSegmentChart
                             data={data.annotations[selectedTab].action_segments.map(({start_time, end_time, label}) => {return {start: start_time, end: end_time, label: label} })}
@@ -152,7 +175,7 @@ export default function VideoDetail({ id }) {
                             min={0}
                             max={duration}
                             />
-                    }
+                    } */}
                 </div>
                 { segment_viewer }
             </div>

@@ -5,6 +5,8 @@ import QuerySet from "./Tree Labels/QuerySet";
 import TemplatizedQuery from "./Tree Labels/TemplatizedQuery";
 import TemplatizedQueryResponse from "./Tree Labels/TemplatizedQueryResponse";
 
+import "./CustomLabelRenderer.scss"
+
 const RENDERERS = {
     'time_segment': TimeSegment,
     'labeled_frame': LabeledFrame,

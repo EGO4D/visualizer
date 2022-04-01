@@ -32,7 +32,7 @@ function useMephistoReview({
     fetch(DATA_URL, { method: "GET", headers: {'x-api-key': localStorage.getItem(LOCAL_KEY)} })
       .catch((err) => setError({ type: "DATA_RETRIEVAL", error: err }))
       .then((res) => {
-        if (res.status == 401){
+        if (res.status === 401){
           history.push('/login')
         }
         return res.json()

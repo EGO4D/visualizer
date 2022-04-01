@@ -14,6 +14,12 @@ export const filter_options = [
         customValuesFunc: (_c, _o) => scenario_values,
     },
     {
+        columnField: "modalities",
+        type: "array[text]",
+        customOperatorFunc: (_category) => ['include', '!include'],
+        customValuesFunc: (_c, _o) => modality_values,
+    },
+    {
         columnField: "narrations",
         type: "array[text]",
         customOperatorFunc: (_c) => ['contain', '!contain'],
@@ -93,6 +99,12 @@ export const filter_options = [
         customValuesFunc: (_c, _o) => video_source_values,
     },
 ];
+
+export const modality_values = [
+    'audio',
+    'imu',
+    'gaze',
+]
 
 export const device_values = [
     'GoPro - Unknown Model',

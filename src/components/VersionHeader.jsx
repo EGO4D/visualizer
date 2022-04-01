@@ -3,5 +3,5 @@ import "./VersionHeader.scss"
 
 
 export default function VersionHeader(){
-    return <div className={'early-access-header'}>Early Access - v0.1</div>
+    return <div className={'early-access-header'}>Early Access - v0.1.1</div>
 }

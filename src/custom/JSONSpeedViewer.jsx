@@ -5,7 +5,7 @@ import SpeedTree from "./Utility/SpeedTree";
 
 import "./JSONSpeedViewer.scss"
 
-function JSONSpeedViewer({ data, customRenderer, videoRef, setPlaying }) {
+function JSONSpeedViewer({ data, customRenderer, videoRef, setPlaying, expandThreshold }) {
 
     // Returns a list of node objects
     function json_to_treenodeinfo(root, path, key) {
@@ -50,7 +50,7 @@ function JSONSpeedViewer({ data, customRenderer, videoRef, setPlaying }) {
 
     return (
         <div className="json-viewer-wrapper" style={{ flex: '1 1 auto', minHeight: '1px' }}>
-            <SpeedTree data={memoized_graph} />{" "}
+            <SpeedTree data={memoized_graph} expandThreshold={expandThreshold}/>{" "}
         </div>
     );
 }

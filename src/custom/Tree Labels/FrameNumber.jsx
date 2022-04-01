@@ -11,7 +11,13 @@ export default function FrameNumber({ data, path, key, videoRef, setPlaying }) {
         videoRef?.current && videoRef.current.seekTo(data['frame_number'] / 30, "seconds");
     }
 
-    return <span onClick={onClick} onKeyDown={(e) => e.key === 'Enter' && onClick(e)} role='button' tabIndex={-1} style={{ width: '100%', padding: '7px 0' }}>
+    return <span
+        className='tree-clickable-label'
+        onClick={onClick}
+        onKeyDown={(e) => e.key === 'Enter' && onClick(e)}
+        role='button'
+        tabIndex={-1}
+        style={{ width: '100%', padding: '7px 0' }}>
         <b>{key}</b>: {data['frame_number']}
     </span >
 }

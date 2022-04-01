@@ -11,6 +11,7 @@ export default function TemplatizedQueryResponse({ data, path, key, videoRef, se
     }
 
     return <span
+        className='tree-clickable-label'
         onClick={onClick}
         onKeyDown={(e) => e.key === 'Enter' && onClick(e)}
         role='button'

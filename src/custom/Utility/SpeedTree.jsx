@@ -4,13 +4,16 @@ import { Icon, InputGroup } from '@blueprintjs/core'
 
 import "./SpeedTree.scss"
 
-const SpeedTree = ({ data }) => {
-  const [openedNodeIds, setOpenedNodeIds] = useState([]);
+const SpeedTree = ({ data, expandThreshold }) => {
+  const depth2Children = data.map((n) => (n.children ?? []).length).reduce((a,b) => a+b, 0);
+  const expandFirstLayer = data.length === 1 || (!!expandThreshold && depth2Children + data.length <= expandThreshold)
+
+  const [openedNodeIds, setOpenedNodeIds] = useState(expandFirstLayer ? data.map((n) => n.id) : []);
   const [selectedNodeIds, setSelectedNodeIds] = useState([]);
 
   const flattenOpened = treeData => {
     const result = [];
-    for (let node of data) {
+    for (let node of treeData) {
       flattenNode(node, 1, result);
     }
     return result;

@@ -12,6 +12,7 @@ export default function TimeSegment({ data, path, key, videoRef, setPlaying }) {
     }
 
     return <span
+        className='tree-clickable-label'
         onClick={onClick}
         onKeyDown={(e) => e.key === 'Enter' && onClick(e)}
         role='button'

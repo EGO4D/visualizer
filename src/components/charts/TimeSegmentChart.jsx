@@ -75,14 +75,12 @@ export default function TimeSegmentChart({ data, seeker_position, videoRef, setP
 
     const { clientX, clientY } = useMousePosition();
 
-    return <div>
-        <svg width="100%" height="100px">
-
-            {/* Border and Axis Markers */}
+    const bordersAndAxes = useMemo(() => {
+        return <>
             <rect x={0} y={0} width='100%' height='100%' fill='transparent' style={{stroke: 'rgb(230, 230, 230)', strokeWidth: 3, pointerEvents: 'none'}}/>
             {
                 [...Array(10).keys()].map((i) => {
-                    return<svg x={`${10*i}%`} style={{overflow: 'visible'}}>
+                    return <svg x={`${10*i}%`} style={{overflow: 'visible'}} key={i}>
                         <rect  width={1} height={85} fill='rgb(230, 230, 230)'/>
                         <text x={0} y={97} textAnchor='middle' style={{fill: 'rgb(230, 230, 230)', pointerEvents:'none', fontSize:'0.8vw'}}>
                             {Math.round((range/10)*i + min)}s
@@ -90,25 +88,43 @@ export default function TimeSegmentChart({ data, seeker_position, videoRef, setP
                     </svg>
                 })
             }
+        </>
+    }, [data, min, max])
+
+    const segments = useMemo(() => {
+        return <svg y={'10px'} height="80px" className={!!activeSegment ? 'focus-mode' : ''}>
+            {
+                tracks.map(({segments}, i) =>
+                    segments.map(({start, end, label, fill, key}) =>
+                        <rect
+                            x={`${(start-min)/range * 100}%`}
+                            y={`${i * (100 / tracks.length)}%`}
+                            width={`${(end-start) / range * 100}%`}
+                            height={`${90 / tracks.length}%`}
+                            fill={fill}
+                            key={key}
+                            className={activeSegment?.key === key ? 'active' : ''}
+                            onMouseEnter={() => setActiveSegment({start, end, label, fill, key})}
+                            onMouseLeave={()=> activeSegment?.key === key && setActiveSegment(null)}
+                            onClick={onSegmentClick.bind(this, start)}
+                            onKeyDown={(e) => e.key === 'Enter' && onSegmentClick.bind(this, start)}
+                            role='button'
+                            tabIndex={-1}
+                        />
+                    )
+                )
+            }
+        </svg>
+    }, [data, activeSegment, min, range]);
+
+    return <div>
+        <svg width="100%" height="100px">
+
+            {/* Border and Axis Markers */}
+            { bordersAndAxes }
 
             {/* Segments */}
-            <svg y={'10px'} height="80px" className={!!activeSegment ? 'focus-mode' : ''}>
-                {
-                    tracks.map(({segments}, i) =>
-                        segments.map(({start, end, label, fill, key}) =>
-                            <rect x={`${(start-min)/range * 100}%`} y={`${i * (100 / tracks.length)}%`} width={`${(end-start) / range * 100}%`} height={`${90 / tracks.length}%`} fill={fill} key={key}
-                                className={activeSegment?.key === key ? 'active' : ''}
-                                onMouseEnter={() => setActiveSegment({start, end, label, fill, key})}
-                                onMouseLeave={()=> activeSegment?.key === key && setActiveSegment(null)}
-                                onClick={onSegmentClick.bind(this, start)}
-                                onKeyDown={(e) => e.key === 'Enter' && onSegmentClick.bind(this, start)}
-                                role='button'
-                                tabIndex={-1}
-                            />
-                        )
-                    )
-                }
-            </svg>
+            { segments }
 
             {/* Seeker */}
             <svg x={`${(seeker_position-min)/range * 100}%`} style={{overflow:'visible', opacity:0.8, pointerEvents:'none'}}>
@@ -121,7 +137,7 @@ export default function TimeSegmentChart({ data, seeker_position, videoRef, setP
         {/* Hover Tooltips */}
         {
             !!activeSegment &&
-            <div className='chart-tooltip' style={{position: 'fixed', top: 0, left: 0, transform:`translateX(${clientX-20}px) translateY(${clientY-35}px)`, pointerEvents: 'none'}}>
+            <div className='chart-tooltip' style={{position: 'fixed', top: 0, left: 0, maxWidth: '50%', transform:`translateX(${clientX-20}px) translateY(${clientY-35}px)`, pointerEvents: 'none'}}>
                 <b>{activeSegment.label}</b> [{Math.round(activeSegment.start)}s - {Math.round(activeSegment.end)}s]
             </div>
         }

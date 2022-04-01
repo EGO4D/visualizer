@@ -11,5 +11,13 @@ export default function LabeledFrame({ data, path, key, videoRef, setPlaying }) 
         !!setPlaying && setPlaying(true);
     }
 
-    return <span onClick={onClick} onKeyDown={(e) => e.key === 'Enter' && onClick(e)} role='button' tabIndex={-1} style={{width:'100%', padding: '7px 0'}}> {data['label']}</span >
+    return <span
+        className='tree-clickable-label'
+        onClick={onClick}
+        onKeyDown={(e) => e.key === 'Enter' && onClick(e)}
+        role='button'
+        tabIndex={-1}
+        style={{width:'100%', padding: '7px 0'}}>
+        {data['label']}
+    </span >
 }
