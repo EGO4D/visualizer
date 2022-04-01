@@ -7,7 +7,7 @@ export default function TemplatizedQueryResponse({ data, path, key, videoRef, se
         e.stopPropagation();
         videoRef?.current &&
             videoRef.current.seekTo(data['start_time'], "seconds");
-        !!setPlaying && setPlaying(true);
+        // !!setPlaying && setPlaying(true);
     }
 
     return <span

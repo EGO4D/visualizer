@@ -3,8 +3,8 @@ import ErrorPane from "../../components/ErrorPane"
 import { Pagination } from "../../components/pagination";
 import { Spinner } from "@blueprintjs/core";
 
-export default function Browse({ setSelectedTab, isLoading, isFinished, filteredData, page, resultsPerPage, itemRenderer, CollectionRenderer, setPage, error, pagination }) {
-    const totalPages = filteredData && Math.ceil(filteredData.length / resultsPerPage);
+export default function Browse({ setSelectedTab, isLoading, isFinished, filteredData, page, resultsPerPage, itemRenderer, CollectionRenderer, setPage, error }) {
+    const totalPages = Math.ceil((filteredData?.length ?? 0 )/ resultsPerPage);
 
     return (
         <div className="item-dynamic">
@@ -18,7 +18,7 @@ export default function Browse({ setSelectedTab, isLoading, isFinished, filtered
             ) : filteredData && filteredData.length > 0 ? (
                 <>
                     <CollectionRenderer items={filteredData.slice((page - 1) * resultsPerPage, page * resultsPerPage)} {...{itemRenderer, setSelectedTab}}/>
-                    {pagination && totalPages > 1 ? (
+                    {totalPages > 1 ? (
                         <Pagination
                             totalPages={totalPages}
                             page={page}

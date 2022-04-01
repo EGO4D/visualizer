@@ -10,6 +10,7 @@ import ErrorPane from "../../components/ErrorPane"
 
 import "./VideoDetail.scss";
 import TimeSegmentChart from "../../components/charts/TimeSegmentChart";
+import { Link } from "react-router-dom";
 
 export default function VideoDetail({ id }) {
     const {
@@ -38,6 +39,56 @@ export default function VideoDetail({ id }) {
         setSelectedTab(Object.keys(data?.annotations ?? [''])[0]);
     }, [data])
 
+    // Annotation Units
+    // TODO: Get image paths from annotations instead of hardcoding them
+    // /assets/viz/{k}_small.jpg
+    const concurrent_videos = React.useMemo(() => {
+        return null;
+        return data?._concurrent_videos && data._concurrent_videos.length > 0 && <>
+            <h3>Concurrent Videos:</h3>
+            <div className='videodetail-concurrent-videos-container'>
+                {data._concurrent_videos.filter(uid => uid !== data.video_uid).map(uid => <div className='videodetail-concurrent-video'>
+                    {/* <div className='videodetail-concurrent-video-title'>{uid}</div> */}
+                    <Link
+                        to={`/${uid}`}
+                        // to={'#'} // Add videos as tabs
+                        style={{ textDecoration: "none" }}
+                        key={uid}>
+                        <img
+                        className='videodetail-concurrent-video-thumbnail'
+                        role="presentation"
+                        src={
+                            getHostname() + `/assets/viz/${uid}_small.jpg`
+                        }
+                        alt="Thumbnail"
+                        />
+                    </Link>
+                </div>)}
+            </div>
+        </>
+    }, [data]);
+
+    const annotation_trees = React.useMemo(() => {
+        return data && <>
+            <h3>Info:</h3>
+            <JSONSpeedViewer data={data.quick_info} customRenderer={CustomLabelRenderer} videoRef={videoRef} setPlaying={setPlaying} />
+
+            <h3>Annotations:</h3>
+            <Tabs selectedTabId={selectedTab} onChange={setSelectedTab} animate={true}>
+                {
+                    Object.keys(data.annotations).map((k) =>
+                        <Tab id={k} title={k} key={k} panel={
+                            <div style={{ display: 'flex', height: '100%' }}>
+                                <JSONSpeedViewer data={data.annotations[k]} customRenderer={CustomLabelRenderer} videoRef={videoRef} setPlaying={setPlaying} expandThreshold={26} />
+                            </div>
+                        } />
+                    )
+                }
+            </Tabs>
+        </>
+    }, [selectedTab, data])
+
+    // Video Units
     const step = useCallback(
         (ctx, now, metadata) => {
             ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
@@ -87,45 +138,28 @@ export default function VideoDetail({ id }) {
 
     // useRVFC(videoRef, canvasRef, [step]);
 
-    const segment_viewer = React.useMemo(() => {
-        return data && <div className="segment-viewer">
-            <h3>Info:</h3>
-            <JSONSpeedViewer data={data.quick_info} customRenderer={CustomLabelRenderer} videoRef={videoRef} setPlaying={setPlaying} />
-
-            <h3>Annotations:</h3>
-            <Tabs selectedTabId={selectedTab} onChange={setSelectedTab} animate={true}>
-                {
-                    Object.keys(data.annotations).map((k) =>
-                        <Tab id={k} title={k} key={k} panel={
-                            <div style={{ display: 'flex', height: '100%' }}>
-                                <JSONSpeedViewer data={data.annotations[k]} customRenderer={CustomLabelRenderer} videoRef={videoRef} setPlaying={setPlaying} expandThreshold={26} />
-                            </div>
-                        } />
-                    )
-                }
-            </Tabs>
-        </div>
-    }, [selectedTab, data])
-
-    const timelines = data?.annotations[selectedTab] && Object.keys(data.annotations[selectedTab]).map(
-        (k) => {
-            const v = data.annotations[selectedTab][k];
-            const time_segs = v.constructor === Array && v.filter((vchild) => vchild._type === 'time_segment');
-            return !!time_segs && time_segs.length > 0 && (
-                <div key={`video-${k}`}>
-                    <span>{k}</span>
-                    <TimeSegmentChart
-                        data={time_segs.map(({start_time, end_time, label}) => {return {start: start_time, end: end_time, label: label} })}
-                        seeker_position={progress}
-                        videoRef={videoRef}
-                        setPlaying={setPlaying}
-                        min={0}
-                        max={duration}
-                    />
-                </div>
-            )
-        }
-    )
+    const video_modules = <div className="video-visualizers">{
+        data?.annotations[selectedTab] && Object.keys(data.annotations[selectedTab]).map(
+            (k) => {
+                const v = data.annotations[selectedTab][k];
+                const time_segs = v.constructor === Array && v.filter((vchild) => vchild._type === 'time_segment');
+                return !!time_segs && time_segs.length > 0 && (
+                    <div key={`video-${k}`}>
+                        <span>{k}</span>
+                        <TimeSegmentChart
+                            data={time_segs.map(({ start_time, end_time, label }) => { return { start: start_time, end: end_time, label: label } })}
+                            seeker_position={progress}
+                            videoRef={videoRef}
+                            setPlaying={setPlaying}
+                            min={0}
+                            max={duration}
+                        />
+                    </div>
+                )
+            }
+        )
+    }
+    </div>
 
     const renderedItem = data && (
         <>
@@ -148,7 +182,7 @@ export default function VideoDetail({ id }) {
                             progressInterval={350}
                             onProgress={({ playedSeconds }) => {
                                 setProgress(playedSeconds);
-                              }}
+                            }}
                             onDuration={setDuration}
                             onError={(error) => {
                                 console.log(error);
@@ -162,22 +196,12 @@ export default function VideoDetail({ id }) {
                     </div>
 
                     {/* Generate a timeline for every first child that's time segments */}
-                    <div className="video-visualizers">
-                        { timelines }
-                    </div>
-                    {/* {
-                        !!data.annotations[selectedTab]?.action_segments &&
-                           <TimeSegmentChart
-                            data={data.annotations[selectedTab].action_segments.map(({start_time, end_time, label}) => {return {start: start_time, end: end_time, label: label} })}
-                            seeker_position={progress}
-                            videoRef={videoRef}
-                            setPlaying={setPlaying}
-                            min={0}
-                            max={duration}
-                            />
-                    } */}
+                    {video_modules}
                 </div>
-                { segment_viewer }
+                <div className="segment-viewer">
+                    {concurrent_videos}
+                    {annotation_trees}
+                </div>
             </div>
         </>
     );

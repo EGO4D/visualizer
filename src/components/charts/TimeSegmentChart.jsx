@@ -42,7 +42,7 @@ export default function TimeSegmentChart({ data, seeker_position, videoRef, setP
         e.stopPropagation();
         videoRef?.current &&
             videoRef.current.seekTo(start, "seconds");
-        !!setPlaying && setPlaying(true);
+        // !!setPlaying && setPlaying(true);
     }
 
     const useMousePosition = () => {

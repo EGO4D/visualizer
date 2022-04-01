@@ -8,7 +8,7 @@ export default function LabeledFrame({ data, path, key, videoRef, setPlaying }) 
         e.stopPropagation();
         videoRef?.current &&
             videoRef.current.seekTo(data['video_time'] ?? data['video_frame']/30, "seconds");
-        !!setPlaying && setPlaying(true);
+        // !!setPlaying && setPlaying(true);
     }
 
     return <span

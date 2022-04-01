@@ -8,7 +8,7 @@ export default function TimeSegment({ data, path, key, videoRef, setPlaying }) {
         e.stopPropagation();
         videoRef?.current &&
             videoRef.current.seekTo(data['start_time'], "seconds");
-        !!setPlaying && setPlaying(true);
+        // !!setPlaying && setPlaying(true);
     }
 
     return <span

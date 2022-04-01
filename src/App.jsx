@@ -1,5 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { Switch, Route, useLocation } from "react-router-dom";
+import React from 'react';
+import { Routes, Route } from "react-router-dom";
+import { QueryClient, QueryClientProvider, useQuery } from 'react-query';
+// import usePageTracking from './hooks/usePageTracking';
 import CollectionView from "./components/CollectionView";
 import ItemView from "./components/ItemView";
 
@@ -14,50 +16,24 @@ import "@blueprintjs/core/lib/css/blueprint.css";
 import "./App.scss";
 import "./custom.scss";
 
-import ReactGA from 'react-ga4';
-const GA_MEASUREMENT_ID = 'G-E3CCWL27RK';
+const queryClient = new QueryClient();
 
-const usePageTracking = () => {
-    const location = useLocation();
-    const [initialized, setInitialized] = useState(false);
-
-    useEffect(() => {
-        if (!window.location.href.includes("localhost")) {
-            ReactGA.initialize(GA_MEASUREMENT_ID);
-        }
-        setInitialized(true);
-    }, [])
-
-    useEffect(() => {
-        initialized && ReactGA.send({hitType: "pageview", page: location.pathname + location.search});
-    }, [initialized, location])
-}
-
-export default function App(){
+export default function App() {
     // usePageTracking(); // Removed until we have a privacy policy
 
     return (
-        <>
-            <Switch>
-                <Route path="/login">
-                <LoginView />
-                </Route>
-                <Route path="/:id">
-                {/* For more information see the 'Customization' section of the README.md file. */}
-                {/* <ItemView wrapClass="item-dynamic" itemRenderer={JSONItem} /> */}
-                <ItemView itemRenderer={NarrationsItem} allowReview={false} />
-                </Route>
-                <Route path="/">
-                {/* For more information see the 'Customization' section of the README.md file. */}
-                <CollectionView
+        <QueryClientProvider client={queryClient}>
+            <Routes>
+                <Route path="/login" element={<LoginView />} />
+                <Route path="/:id" element={<ItemView itemRenderer={NarrationsItem} allowReview={false} />} />
+                <Route path="/" element={<CollectionView
                     collectionRenderer={GridCollection}
                     // itemRenderer={JSONItem}
                     itemRenderer={NarrationsThumbnail}
                     pagination={true}
                     resultsPerPage={12}
-                />
-                </Route>
-            </Switch>
-        </>
+                />} />
+            </Routes>
+        </QueryClientProvider>
     );
 }

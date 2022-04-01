@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useMephistoReview } from "../shims/mephisto-review-hook";
-import { useParams, useHistory, Link } from "react-router-dom";
+import { useParams, Link, useSearchParams } from "react-router-dom";
 import {
   Button,
   Navbar,
@@ -18,43 +18,24 @@ import { getHostname } from "../utils";
 import ErrorPane from "./ErrorPane";
 import VersionHeader from "./VersionHeader";
 
-const AppToaster = Toaster.create({
-  className: "recipe-toaster",
-  position: Position.TOP,
-});
+// const AppToaster = Toaster.create({
+//   className: "recipe-toaster",
+//   position: Position.TOP,
+// });
 
 function ItemView({
   itemRenderer: ItemRenderer = JSONItem,
   wrapClass,
-  allowReview = true,
 }) {
   const { id } = useParams();
+  const [searchParams,] = useSearchParams();
   const {
     data: item,
     isFinished,
     isLoading,
-    submit,
     error,
     mode,
   } = useMephistoReview({ taskId: id, hostname: getHostname() });
-
-  const history = useHistory();
-
-  const confirmReview = () => {
-    if (mode === "OBO") {
-      history.push("/");
-    } else {
-      AppToaster.show({ message: "Review response recorded." });
-    }
-  };
-
-  const reviewError = (error) => {
-    AppToaster.show({ message: `ERROR: ${error}` });
-  };
-
-  const buttonDisable = error || isFinished || isLoading || item == null;
-
-  const hideReviewWorkflow = !allowReview;
 
   return (
     <>
@@ -63,7 +44,7 @@ function ItemView({
           <NavbarGroup>
             {mode === "ALL" ? (
               <>
-                <Link to="/" style={{ textDecoration: "none" }}>
+                <Link to={`/?${searchParams.toString()}`} style={{ textDecoration: "none" }}>
                   <Button intent="primary" icon="caret-left" id="home-button">
                     <b>Ego4D Dataset</b>
                   </Button>
@@ -79,42 +60,6 @@ function ItemView({
               )}
             </NavbarHeading>
           </NavbarGroup>
-          {hideReviewWorkflow ? null : (
-            <NavbarGroup align={Alignment.RIGHT}>
-              <Button
-                className="btn"
-                intent="danger"
-                disabled={buttonDisable}
-                id="reject-button"
-                onClick={async () => {
-                  var response = await submit({ result: "rejected" });
-                  if (response === "SUCCESS") {
-                    confirmReview();
-                  } else if (response) {
-                    reviewError(response);
-                  }
-                }}
-              >
-                <b>REJECT</b>
-              </Button>
-              <Button
-                className="btn"
-                intent="success"
-                disabled={buttonDisable}
-                id="approve-button"
-                onClick={async () => {
-                  var response = await submit({ result: "approved" });
-                  if (response === "SUCCESS") {
-                    confirmReview();
-                  } else if (response) {
-                    reviewError(response);
-                  }
-                }}
-              >
-                <b>APPROVE</b>
-              </Button>
-            </NavbarGroup>
-          )}
       </Navbar>
       <main className={`item-view mode-${mode}`}>
         {isLoading ? (

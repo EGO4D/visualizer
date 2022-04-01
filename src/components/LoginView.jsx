@@ -1,7 +1,7 @@
 // Copyright (c) Meta Platforms, Inc. and affiliates. All Rights Reserved.
 
 import React, { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Button, Card, Elevation, InputGroup, Intent } from "@blueprintjs/core";
 import { Tooltip2 } from "@blueprintjs/popover2";
 
@@ -11,17 +11,13 @@ const LOCAL_KEY = 'api-key';
 
 function LoginView() {
   const [showPassword, setShowPassword] = useState(false);
-  const [login_key, setLoginKey] = useState('');
-  const history = useHistory();
-
-  useEffect(() => {
-    setLoginKey(localStorage.getItem(LOCAL_KEY));
-  }, []);
+  const [login_key, setLoginKey] = useState(localStorage.getItem(LOCAL_KEY));
+  const navigate = useNavigate();
 
   const handleLockClick = () => { setShowPassword(!showPassword); }
   const handleLogIn = () => {
     localStorage.setItem(LOCAL_KEY, login_key);
-    history.push("/");
+    navigate("/");
   }
 
   const lockButton = (

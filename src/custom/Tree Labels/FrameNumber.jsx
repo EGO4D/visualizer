@@ -7,7 +7,6 @@ export default function FrameNumber({ data, path, key, videoRef, setPlaying }) {
     const onClick = (e) => {
         e.stopPropagation();
         !!setPlaying && setPlaying(false);
-        // videoRef?.current && videoRef.current.pause();
         videoRef?.current && videoRef.current.seekTo(data['frame_number'] / 30, "seconds");
     }
 

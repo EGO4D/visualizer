@@ -43,14 +43,31 @@
 }
 
 .segment-viewer {
+  width: 50%;
+  position: relative;
   margin-left: 50%;
   padding: 10px 20px 30px 30px;
   flex: 1;
 }
 
+.videodetail-concurrent {
+  &-videos-container{
+    display:flex;
+    height:100px;
+    width: 100%;
+    overflow: scroll;
+  }
 
+  &-video-thumbnail {
+    height: 100%;
+    width: auto;
+    padding: 0 10px 0 0;
 
-
+    &:hover {
+      transform:translateY(-5px);
+    }
+  }
+}
 
 
 .video-viewer {
@@ -83,8 +100,6 @@
 .video-visualizers {
   overflow:scroll;
 }
-
-
 
 
 

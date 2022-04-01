@@ -1,7 +1,7 @@
 // Copyright (c) Meta Platforms, Inc. and affiliates. All Rights Reserved.
 
 import React, { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useMephistoReview } from "../shims/mephisto-review-hook";
 import {
   Button,
@@ -30,23 +30,32 @@ import VersionHeader from "./VersionHeader";
 function CollectionView({
   itemRenderer = JSONItem,
   collectionRenderer: CollectionRenderer = GridCollection,
-  pagination = true,
   resultsPerPage = 12,
 }) {
-  const [page, setPage] = useState(pagination ? 1 : null);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [page, setPage] = useState(parseInt(searchParams.get('page') ?? '1'));
   const [filteredData, setFilteredData] = useState([]);
-  const [selectedTab, setSelectedTab] = useState('browse')
-  const history = useHistory();
+  const [selectedTab, setSelectedTab] = useState('browse');
+  const navigate = useNavigate();
 
-  const { filterData, isFinished, isLoading, error, mode } =
+  const { filterData, isFinished, isLoading, error } =
     useMephistoReview({
-      page,
-      resultsPerPage,
-      filters: "",
       hostname: getHostname(),
     });
 
-  useEffect(() => setPage(1), [filteredData]);
+  const setSavedPage = (newPage) => {
+    setSearchParams({ page: newPage });
+    setPage(newPage);
+  }
+
+  // TODO: simplify how this is handled
+  useEffect(() => {
+    if ((filteredData?.length ?? 0) === 0) {
+      return;
+    }
+    const totalPages = Math.ceil(filteredData.length / resultsPerPage);
+    (page > totalPages) && setSavedPage(Math.max(totalPages, 1));
+  }, [filteredData]);
 
   const gen_export_csv = (filteredData) => {
     return !!filteredData ? filteredData.map(o => { return { video_uid: o['video_uid'] } }) : []
@@ -59,13 +68,13 @@ function CollectionView({
   }
 
   const onImFeelingLuckyClick = () => {
-    history.push(`/${filteredData[Math.floor(Math.random()*filteredData.length)].video_uid}`)
+    navigate(`/${filteredData[Math.floor(Math.random() * filteredData.length)].video_uid}`)
   }
 
   return (
     <>
       <VersionHeader />
-      <Navbar fixedToTop={true} className={"navbar-wrapper"} style={{height: '75px'}}>
+      <Navbar fixedToTop={true} className={"navbar-wrapper"} style={{ height: '75px' }}>
         <div>
           <NavbarGroup className="navbar-header">
             <NavbarHeading>
@@ -95,7 +104,7 @@ function CollectionView({
       <main id="all-item-view-wrapper">
         <Tabs selectedTabId={selectedTab} onChange={setSelectedTab} animate={true} className={'main-tabs'}>
           <Tab id={'browse'} title={'Browse'} panel={
-            <Browse {...{ setSelectedTab, itemRenderer, CollectionRenderer, isLoading, isFinished, filteredData, page, resultsPerPage, setPage, error, pagination }} />
+            <Browse {...{ setSelectedTab, itemRenderer, CollectionRenderer, isLoading, isFinished, filteredData, page, resultsPerPage, setPage: setSavedPage, error }} />
           } />
 
           <Tab id={'analyze'} title={'Analyze'} panel={

@@ -4,7 +4,7 @@ import React from "react";
 import _ from "lodash";
 import { ResponsiveBar, ResponsiveBarCanvas } from '@nivo/bar'
 import { ResponsiveScatterPlot, ResponsiveScatterPlotCanvas } from '@nivo/scatterplot'
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { benchmark_values, scenario_values, device_values } from "../../components/filterbox/filterData";
 import { getHostname } from "../../utils";
 
@@ -45,7 +45,7 @@ const barchart_configs = [
 
 
 export default function Analyze({ filteredData, filterData }) {
-    const history = useHistory();
+    const navigate = useNavigate();
 
     const computed_barcharts = !!filteredData && barchart_configs.map(({ index_name, index_values, filter_zeroes, measures, sort_key, custom_filter, chartArgs }) => {
         let index_data = [];
@@ -168,7 +168,7 @@ export default function Analyze({ filteredData, filterData }) {
                         <p className='video-tooltip-category'>{node.data.category}</p>
                     </div>
                 }
-                onClick={(node, e) => (e.ctrlKey || e.metaKey) ? window.open(`${getHostname()}/${node.data.video_uid}`) : history.push(`/${node.data.video_uid}`)}
+                onClick={(node, e) => (e.ctrlKey || e.metaKey) ? window.open(`${getHostname()}/${node.data.video_uid}`) : navigate(`/${node.data.video_uid}`)}
                 axisTop={{
                     orient: 'top',
                     tickValues: [],
