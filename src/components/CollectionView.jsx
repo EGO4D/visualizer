@@ -1,7 +1,7 @@
 // Copyright (c) Meta Platforms, Inc. and affiliates. All Rights Reserved.
 
 import React, { useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useMephistoReview } from "../shims/mephisto-review-hook";
 import {
   Button,
@@ -24,6 +24,7 @@ import Analyze from "../custom/Panels/Analyze";
 import "./CollectionView.scss"
 import Browse from "../custom/Panels/Browse";
 import VersionHeader from "./VersionHeader";
+import useStateWithUrlParam from "../hooks/useStateWithUrlParam";
 // import VideoDetail from "../custom/Panels/VideoDetail";
 
 
@@ -32,10 +33,9 @@ function CollectionView({
   collectionRenderer: CollectionRenderer = GridCollection,
   resultsPerPage = 12,
 }) {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [page, setPage] = useState(parseInt(searchParams.get('page') ?? '1'));
+  const [page, setPage] =  useStateWithUrlParam('page', '1', parseInt);
   const [filteredData, setFilteredData] = useState([]);
-  const [selectedTab, setSelectedTab] = useState('browse');
+  const [selectedTab, setSelectedTab] = useStateWithUrlParam('tab', 'browse');
   const navigate = useNavigate();
 
   const { filterData, isFinished, isLoading, error } =
@@ -43,18 +43,13 @@ function CollectionView({
       hostname: getHostname(),
     });
 
-  const setSavedPage = (newPage) => {
-    setSearchParams({ page: newPage });
-    setPage(newPage);
-  }
-
   // TODO: simplify how this is handled
   useEffect(() => {
     if ((filteredData?.length ?? 0) === 0) {
       return;
     }
     const totalPages = Math.ceil(filteredData.length / resultsPerPage);
-    (page > totalPages) && setSavedPage(Math.max(totalPages, 1));
+    (page > totalPages) && setPage(Math.max(totalPages, 1));
   }, [filteredData]);
 
   const gen_export_csv = (filteredData) => {
@@ -76,7 +71,10 @@ function CollectionView({
       <VersionHeader />
       <Navbar fixedToTop={true} className={"navbar-wrapper"} style={{ height: '75px' }}>
         <div>
-          <NavbarGroup className="navbar-header">
+          <NavbarGroup className="navbar-header" onClick={() => {
+            setSelectedTab('browse');
+            setPage(1);
+            }}>
             <NavbarHeading>
               <b>
                 <pre>EGO4D Dataset</pre>
@@ -102,9 +100,9 @@ function CollectionView({
         </div>
       </Navbar>
       <main id="all-item-view-wrapper">
-        <Tabs selectedTabId={selectedTab} onChange={setSelectedTab} animate={true} className={'main-tabs'}>
+        <Tabs selectedTabId={selectedTab} onChange={setSelectedTab} animate={true} className={'main-tabs'} renderActiveTabPanelOnly={true}>
           <Tab id={'browse'} title={'Browse'} panel={
-            <Browse {...{ setSelectedTab, itemRenderer, CollectionRenderer, isLoading, isFinished, filteredData, page, resultsPerPage, setPage: setSavedPage, error }} />
+            <Browse {...{ setSelectedTab, itemRenderer, CollectionRenderer, isLoading, isFinished, filteredData, page, resultsPerPage, setPage, error }} />
           } />
 
           <Tab id={'analyze'} title={'Analyze'} panel={

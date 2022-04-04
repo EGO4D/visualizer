@@ -39,6 +39,11 @@ rect:focus {
     outline: none;
 }
 
+.navbar-header {
+  cursor: pointer;
+  user-select: none;
+}
+
 @media only screen and (max-width: 1200px) {
   .navbar-header {
     /* display: none !important; */

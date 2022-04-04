@@ -6,14 +6,16 @@ import TemplatizedQuery from "./Tree Labels/TemplatizedQuery";
 import TemplatizedQueryResponse from "./Tree Labels/TemplatizedQueryResponse";
 
 import "./CustomLabelRenderer.scss"
+import VideoTime from "./Tree Labels/VideoTime";
 
 const RENDERERS = {
-    'time_segment': TimeSegment,
-    'labeled_frame': LabeledFrame,
     'frame_number': FrameNumber,
+    'labeled_frame': LabeledFrame,
     'query_set': QuerySet,
-    'templatized_query': TemplatizedQuery,
     'templatized_query_response': TemplatizedQueryResponse,
+    'templatized_query': TemplatizedQuery,
+    'time_segment': TimeSegment,
+    'video_time': VideoTime,
 }
 
 export default function CustomLabelRenderer({ root, path, key, videoRef, setPlaying }) {

@@ -60,7 +60,7 @@ export default function Analyze({ filteredData, filterData }) {
         return { index_name, chartArgs, keys: measures.map(m => m['key']), data: index_data.sort((a, b) => a[sort_key] < b[sort_key] ? 1 : -1) };
     })
 
-    const bar_charts = computed_barcharts.map(({ index_name, keys, data, chartArgs = {} }) => {
+    const bar_charts = computed_barcharts.map(({ index_name, keys, data, chartArgs = {} }, i) => {
         const ChartComponent = data.length > 20 ? ResponsiveBarCanvas : ResponsiveBar;
         const chartProps = _.merge({
             data,
@@ -126,7 +126,7 @@ export default function Analyze({ filteredData, filterData }) {
             chartArgs
         );
 
-        return <div style={{ height: '250px', width: data.length > 20 ? '100%' : '50%', float: 'left' }}>
+        return <div style={{ height: '250px', width: data.length > 20 ? '100%' : '50%', float: 'left' }} key={`bar-${i}`}>
             <ChartComponent {...chartProps} />
         </div>
     })
