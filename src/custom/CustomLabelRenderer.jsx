@@ -1,21 +1,23 @@
 import TimeSegment from "./Tree Labels/TimeSegment";
 import LabeledFrame from "./Tree Labels/LabeledFrame";
 import FrameNumber from "./Tree Labels/FrameNumber";
-import QuerySet from "./Tree Labels/QuerySet";
+import NLQQuerySet from "./Tree Labels/NLQQuerySet"
+import VQQuerySet from "./Tree Labels/VQQuerySet";
 import TemplatizedQuery from "./Tree Labels/TemplatizedQuery";
 import TemplatizedQueryResponse from "./Tree Labels/TemplatizedQueryResponse";
+import VideoTime from "./Tree Labels/VideoTime";
 
 import "./CustomLabelRenderer.scss"
-import VideoTime from "./Tree Labels/VideoTime";
 
 const RENDERERS = {
     'frame_number': FrameNumber,
+    'video_time': VideoTime,
     'labeled_frame': LabeledFrame,
-    'query_set': QuerySet,
+    'nlq_query_set': NLQQuerySet,
+    'vq_query_set': VQQuerySet,
     'templatized_query_response': TemplatizedQueryResponse,
     'templatized_query': TemplatizedQuery,
     'time_segment': TimeSegment,
-    'video_time': VideoTime,
 }
 
 export default function CustomLabelRenderer({ root, path, key, videoRef, setPlaying }) {

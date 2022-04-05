@@ -1,7 +1,7 @@
 // Copyright (c) Meta Platforms, Inc. and affiliates. All Rights Reserved.
 
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useMephistoReview } from "../shims/mephisto-review-hook";
 import {
   Button,
@@ -71,15 +71,14 @@ function CollectionView({
       <VersionHeader />
       <Navbar fixedToTop={true} className={"navbar-wrapper"} style={{ height: '75px' }}>
         <div>
-          <NavbarGroup className="navbar-header" onClick={() => {
-            setSelectedTab('browse');
-            setPage(1);
-            }}>
-            <NavbarHeading>
-              <b>
-                <pre>EGO4D Dataset</pre>
-              </b>
-            </NavbarHeading>
+          <NavbarGroup className="navbar-header">
+            <Link to={'/'} style={{ textDecoration: "none" }}>
+              <NavbarHeading>
+                <b>
+                  <pre>EGO4D Dataset</pre>
+                </b>
+              </NavbarHeading>
+            </Link>
           </NavbarGroup>
           <NavbarGroup align={Alignment.CENTER}>
             <FilterBox filterData={filterData} setFilteredData={setFilteredData} />

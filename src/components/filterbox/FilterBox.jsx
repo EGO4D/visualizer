@@ -1,11 +1,12 @@
 import { Icon } from "@blueprintjs/core";
 import React, { useEffect, useState } from "react";
 
-import ReactFilterBox, { SimpleResultProcessing, GridDataAutoCompleteHandler } from "react-filter-box";
+import ReactFilterBox, { SimpleResultProcessing, GridDataAutoCompleteHandler, FilterQueryParser } from "react-filter-box";
 import "react-filter-box/lib/react-filter-box.css"
 import "./FilterBox.css"
 
 import { filter_options } from "./filterData";
+import useStateWithUrlParam from "../../hooks/useStateWithUrlParam";
 
 //extend this class to add your custom operator
 class CustomAutoComplete extends GridDataAutoCompleteHandler {
@@ -71,23 +72,33 @@ class CustomResultProcessing extends SimpleResultProcessing {
 }
 
 export default function FilterBox({ filterData, setFilteredData }) {
-    const [query, setQuery] = useState('');
-    useEffect(() => onParseOk([]), [filterData]);
+    const [query, setQueryAndURL, setQuery] = useStateWithUrlParam('query', '');
+
+    const autoCompleteHandler = new CustomAutoComplete([], filter_options);
+    const parser = new FilterQueryParser();
+    parser.setAutoCompleteHandler(autoCompleteHandler);
 
     const onParseOk = (expressions) => {
         var newData = new CustomResultProcessing(filter_options).process(filterData, expressions);
-        setFilteredData(newData)
+        setQueryAndURL(query);
+        setFilteredData(newData);
     }
 
+    useEffect(() => {
+        var result = parser.parse(query);
+        if (result.isError) { return }
+        onParseOk(result);
+    }, [filterData]); // Run pre-loaded url query when the page first loads
+
     return <>
-        <Icon icon={'search'} className='filterbox-search-icon'/>
+        <Icon icon={'search'} className='filterbox-search-icon' />
         <ReactFilterBox
             data={[]}
             options={filter_options}
             query={query}
             onChange={(q) => setQuery(q)}
             onParseOk={onParseOk}
-            autoCompleteHandler={new CustomAutoComplete([], filter_options)}
+            autoCompleteHandler={autoCompleteHandler}
         />
     </>
 };

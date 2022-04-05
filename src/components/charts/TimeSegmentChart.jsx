@@ -38,10 +38,12 @@ export default function TimeSegmentChart({ data, seeker_position, videoRef, setP
     min = min ?? data_min;
     const range = max-min || 0.000000000001; // TODO: replace this magic number
 
-    const onSegmentClick = (start, e) => {
+    const onSegmentClick = (start, end, e) => {
         e.stopPropagation();
+        console.log(e);
+        const target_time = e.shiftKey ? end : start
         videoRef?.current &&
-            videoRef.current.seekTo(start, "seconds");
+            videoRef.current.seekTo(target_time, "seconds");
         // !!setPlaying && setPlaying(true);
     }
 
@@ -106,8 +108,8 @@ export default function TimeSegmentChart({ data, seeker_position, videoRef, setP
                             className={activeSegment?.key === key ? 'active' : ''}
                             onMouseEnter={() => setActiveSegment({start, end, label, fill, key})}
                             onMouseLeave={()=> activeSegment?.key === key && setActiveSegment(null)}
-                            onClick={onSegmentClick.bind(this, start)}
-                            onKeyDown={(e) => e.key === 'Enter' && onSegmentClick.bind(this, start)}
+                            onClick={onSegmentClick.bind(this, start, end)}
+                            onKeyDown={(e) => e.key === 'Enter' && onSegmentClick.bind(this, start, end)}
                             role='button'
                             tabIndex={-1}
                         />

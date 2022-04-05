@@ -172,7 +172,7 @@ export default function Analyze({ filteredData, filterData }) {
                 axisTop={{
                     orient: 'top',
                     tickValues: [],
-                    legend: 'Action Feature T-SNE Embeddings',
+                    legend: 'SlowFast Feature T-SNE Embeddings',
                     legendPosition: 'middle',
                     legendOffset: -20
                 }}
