@@ -72,7 +72,7 @@ class CustomResultProcessing extends SimpleResultProcessing {
 }
 
 export default function FilterBox({ filterData, setFilteredData }) {
-    const [query, setQueryAndURL, setQuery] = useStateWithUrlParam('query', '');
+    const [query, setQueryAndURL, setQuery, setQueryURL] = useStateWithUrlParam('query', '');
 
     const autoCompleteHandler = new CustomAutoComplete([], filter_options);
     const parser = new FilterQueryParser();
@@ -80,7 +80,7 @@ export default function FilterBox({ filterData, setFilteredData }) {
 
     const onParseOk = (expressions) => {
         var newData = new CustomResultProcessing(filter_options).process(filterData, expressions);
-        setQueryAndURL(query);
+        setQueryURL(query.trim());
         setFilteredData(newData);
     }
 

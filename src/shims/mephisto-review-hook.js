@@ -13,13 +13,15 @@ function useMephistoReview({
     ? `${hostname}/data/${taskId}`
     : `${hostname}/data`;
 
-  const { isLoading, error, data } = useQuery(taskId ?? 'home', () => fetch(DATA_URL, { method: "GET", headers: { 'x-api-key': localStorage.getItem(LOCAL_KEY) } })
-    .then((res) => {
-      if (res.status === 401) {
-        navigate('/login');
-      }
-      return res.json();
-    })
+  const { isLoading, error, data } = useQuery(taskId ?? 'home', () =>
+    fetch(DATA_URL, { method: "GET", headers: { 'x-api-key': localStorage.getItem(LOCAL_KEY) } })
+      .then((res) => {
+        if (res.status === 401) {
+          navigate('/login');
+        }
+        return res.json();
+      }),
+      { refetchOnWindowFocus: false }
   );
 
   return {

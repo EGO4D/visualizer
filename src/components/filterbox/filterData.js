@@ -199,7 +199,7 @@ export const split_values = [
     'vq-val'
 ];
 
-export const benchmark_values = ['av', 'moments', 'vq', 'nlq', 'narrations', 'fho_hands', 'fho_lta', 'fho_scod', 'fho_sta'];
+export const benchmark_values = ['av', 'moments', 'vq', 'nlq', 'fho_hands', 'fho_lta', 'fho_scod', 'fho_sta'];
 
 export const scenario_values = [
     'ATV scene',

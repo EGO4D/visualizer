@@ -2,6 +2,7 @@ import React, { useCallback, useRef, useEffect, useState } from "react";
 import ReactPlayer from "react-player"; /* dependency */
 import JSONSpeedViewer from "../JSONSpeedViewer";
 import CustomLabelRenderer from "../CustomLabelRenderer";
+import VideoModules from "../../components/VideoModules";
 import { Tab, Tabs } from "@blueprintjs/core";
 import ResponsiveCanvas from "../Utility/ResponsiveCanvas";
 import { getHostname } from "../../utils";
@@ -9,10 +10,10 @@ import { useMephistoReview } from "../../shims/mephisto-review-hook";
 import ErrorPane from "../../components/ErrorPane"
 
 import "./VideoDetail.scss";
-import TimeSegmentChart from "../../components/charts/TimeSegmentChart";
 import { Link } from "react-router-dom";
 
 export default function VideoDetail({ id }) {
+    console.log("re-render VideoDetail");
     const {
         data: item,
         isFinished,
@@ -23,7 +24,7 @@ export default function VideoDetail({ id }) {
     const [progress, setProgress] = React.useState(0);
     const [duration, setDuration] = React.useState(0);
     const [playing, setPlaying] = useState(false);
-    const [bboxes, setBboxes] = useState([{ label: 'test-bbox', x: 250.5, y: 300.50, width: 100, height: 100 }]);
+    const [bboxes, setBboxes] = useState({});
     const canvasRef = useRef();
     const videoRef = useRef();
 
@@ -39,9 +40,19 @@ export default function VideoDetail({ id }) {
         setSelectedTab(Object.keys(data?.annotations ?? [''])[0]);
     }, [data])
 
+    // TODO: remove temp bbox code for testing
+    useEffect(() => {
+        const test_bboxes = {};
+        [...Array(1000).keys()].forEach(frame => {
+            test_bboxes[frame] = [{ label: 'test-bbox', x: frame, y: frame*0.5, width: 1800-frame, height: 100 }]
+        });
+        setBboxes(test_bboxes);
+    }, [])
+
     // Annotation Units
     // TODO: Get image paths from annotations instead of hardcoding them
     // /assets/viz/{k}_small.jpg
+    // TODO: bring back concurrent videos with a better UI
     const concurrent_videos = React.useMemo(() => {
         return null;
         return data?._concurrent_videos && data._concurrent_videos.length > 0 && <>
@@ -91,10 +102,12 @@ export default function VideoDetail({ id }) {
     // Video Units
     const step = useCallback(
         (ctx, now, metadata) => {
+            const frame = Math.round(metadata.mediaTime * 30); // TODO: get framerate from fps in data
+            const cur_bboxes = bboxes[frame] ?? []
             ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
 
             ctx.lineWidth = 5;
-            bboxes.forEach(bbox => {
+            cur_bboxes.forEach(bbox => {
                 ctx.strokeRect(
                     bbox.x / dimensions[0] * canvasRef.current.width,
                     bbox.y / dimensions[1] * canvasRef.current.height,
@@ -108,7 +121,7 @@ export default function VideoDetail({ id }) {
 
             ctx.fillText(
                 "Frame: " +
-                Math.round(metadata.mediaTime * 30),
+                frame,
                 100,
                 canvasRef.current.height / 2
             );
@@ -138,28 +151,7 @@ export default function VideoDetail({ id }) {
 
     // useRVFC(videoRef, canvasRef, [step]);
 
-    const video_modules = <div className="video-visualizers">{
-        data?.annotations[selectedTab] && Object.keys(data.annotations[selectedTab]).map(
-            (k) => {
-                const v = data.annotations[selectedTab][k];
-                const time_segs = v.constructor === Array && v.filter((vchild) => vchild._type === 'time_segment');
-                return !!time_segs && time_segs.length > 0 && (
-                    <div key={`video-${k}`}>
-                        <span>{k}</span>
-                        <TimeSegmentChart
-                            data={time_segs.map(({ start_time, end_time, label }) => { return { start: start_time, end: end_time, label: label } })}
-                            seeker_position={progress}
-                            videoRef={videoRef}
-                            setPlaying={setPlaying}
-                            min={0}
-                            max={duration}
-                        />
-                    </div>
-                )
-            }
-        )
-    }
-    </div>
+    const videoModules = data?.annotations[selectedTab] && <VideoModules data={data} annotations={data?.annotations[selectedTab]} progress={progress} videoRef={videoRef} setPlaying={setPlaying} duration={duration} />;
 
     const renderedItem = data && (
         <>
@@ -192,11 +184,9 @@ export default function VideoDetail({ id }) {
                             onPause={() => setPlaying(false)}
                         />
 
-                        <ResponsiveCanvas className={"video-canvas"} ref={canvasRef} reactPlayerRef={videoRef} scale={1.5} />
+                        <ResponsiveCanvas className={"video-canvas"} ref={canvasRef} reactPlayerRef={videoRef} scale={2} />
                     </div>
-
-                    {/* Generate a timeline for every first child that's time segments */}
-                    {video_modules}
+                    { videoModules }
                 </div>
                 <div className="segment-viewer">
                     {concurrent_videos}

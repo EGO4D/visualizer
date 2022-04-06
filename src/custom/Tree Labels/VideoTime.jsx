@@ -6,7 +6,6 @@ export default function VideoTime({ data, path, key, videoRef, setPlaying }) {
 
     const onClick = (e) => {
         e.stopPropagation();
-        !!setPlaying && setPlaying(false);
         videoRef?.current && videoRef.current.seekTo(data['video_time'], "seconds");
     }
 

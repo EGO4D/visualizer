@@ -72,7 +72,7 @@ function CollectionView({
       <Navbar fixedToTop={true} className={"navbar-wrapper"} style={{ height: '75px' }}>
         <div>
           <NavbarGroup className="navbar-header">
-            <Link to={'/'} style={{ textDecoration: "none" }}>
+            <Link to={'/'} style={{ textDecoration: "none", color: "black" }}>
               <NavbarHeading>
                 <b>
                   <pre>EGO4D Dataset</pre>

@@ -40,7 +40,6 @@ export default function TimeSegmentChart({ data, seeker_position, videoRef, setP
 
     const onSegmentClick = (start, end, e) => {
         e.stopPropagation();
-        console.log(e);
         const target_time = e.shiftKey ? end : start
         videoRef?.current &&
             videoRef.current.seekTo(target_time, "seconds");

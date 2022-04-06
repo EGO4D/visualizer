@@ -16,6 +16,7 @@ function JSONSpeedViewer({ data, customRenderer, videoRef, setPlaying, expandThr
 
         // Case 2: Root is a single value
         else if (['string', 'number', 'boolean'].indexOf(typeof (root)) > -1) {
+            if (key.startsWith('_')) { return null }; // Keep for production, remove for development
             return [{
                 'id': [...path, String(key)].join('/'),
                 'label': <span><b>{key}</b>: {root}</span>
@@ -50,7 +51,7 @@ function JSONSpeedViewer({ data, customRenderer, videoRef, setPlaying, expandThr
 
     return (
         <div className="json-viewer-wrapper" style={{ flex: '1 1 auto', minHeight: '1px' }}>
-            <SpeedTree data={memoized_graph} expandThreshold={expandThreshold}/>{" "}
+            <SpeedTree data={memoized_graph} expandThreshold={expandThreshold} />{" "}
         </div>
     );
 }
