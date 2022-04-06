@@ -5,24 +5,27 @@ function ResponsiveCanvas(props, ref){
     const [width, setWidth] = useState(0);
     const [height, setHeight] = useState(0);
 
+    const onResize = () => {
+        const parent = props.reactPlayerRef?.current?.getInternalPlayer();
+        if (!parent) { return; }
+
+        const [width, height] = getSize(parent);
+
+        setWidth(width);
+        setHeight(height);
+    }
+
     useEffect(() => {
-        const onResize = () => {
-            const parent = props.reactPlayerRef?.current?.getInternalPlayer();
-            if (!parent) { return; }
-
-            const [width, height] = getSize(parent);
-
-            setWidth(width);
-            setHeight(height);
-        }
-
         window.addEventListener("resize", onResize);
-        onResize();
 
         return () => {
             window.removeEventListener("resize", onResize);
         }
     }, []);
+
+    useEffect(() => {
+        onResize();
+    }, [props.playerReady])
 
     return <canvas
             className={props.className}

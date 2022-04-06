@@ -1,5 +1,5 @@
 import { Icon } from "@blueprintjs/core";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 
 import ReactFilterBox, { SimpleResultProcessing, GridDataAutoCompleteHandler, FilterQueryParser } from "react-filter-box";
 import "react-filter-box/lib/react-filter-box.css"

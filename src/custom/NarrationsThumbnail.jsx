@@ -92,39 +92,4 @@ function getTags(data) {
   return data.scenarios ?? []
 }
 
-function getKeyWords(payload) {
-  const counts = getAllObjectValWordCounts(
-    payload,
-    [
-      "C",
-      "the",
-      "be",
-      "of",
-      "from",
-      "to",
-      "and",
-      "a",
-      "in",
-      "that",
-      "have",
-      "it",
-      "for",
-      "not",
-      "on",
-      "with",
-      "by",
-      "his",
-      "her",
-      "up",
-      "down",
-    ],
-    ["id"]
-  );
-  const mostCommonWords = Object.entries(counts).sort(
-    ([firstKey, firstValue], [secondKey, secondValue]) =>
-      secondValue - firstValue
-  );
-  return mostCommonWords.slice(0, 10).map(([word, _count]) => word);
-}
-
 export default NarrationsThumbnail;

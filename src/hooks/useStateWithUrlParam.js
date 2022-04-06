@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useSearchParams } from "react-router-dom";
 
 export default function useStateWithUrlParam(name, default_val, _deserializer){

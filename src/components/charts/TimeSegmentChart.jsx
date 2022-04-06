@@ -53,7 +53,7 @@ export default function TimeSegmentChart({ data, seeker_position, videoRef, setP
         });
 
         const updatePosition = event => {
-          const { pageX, pageY, clientX, clientY } = event;
+          const { clientX, clientY } = event;
 
           setPosition({
             clientX,

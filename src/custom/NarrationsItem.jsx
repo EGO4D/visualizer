@@ -4,7 +4,6 @@ import React from "react";
 import VideoDetail from "./Panels/VideoDetail";
 
 function NarrationsItem({ item }) {
-  const data = item.data;
 
   return (
     <div className="json-item-renderer">

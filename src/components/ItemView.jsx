@@ -9,9 +9,6 @@ import {
   NavbarGroup,
   NavbarDivider,
   NavbarHeading,
-  Alignment,
-  Position,
-  Toaster,
 } from "@blueprintjs/core";
 import { JSONItem } from "../renderers/JSONItem";
 import { getHostname } from "../utils";

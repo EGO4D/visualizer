@@ -6,42 +6,10 @@
 
 import React, { useMemo } from 'react';
 import TimeSegmentsModule from './video_modules/TimeSegmentsModule';
-
-// Yields all objects in root that pass condition.
-// DOES NOT yield nested valid objects. If an object matches the condition, its children are not checked. This is a small optimization for our Ego4D data.
-function* dfs_find(root, condition, path, key) {
-    path = path ?? [];
-    key = key ?? '';
-    // Case 1: Root is null or undefined
-    if (root === null || root === undefined) {
-        return;
-    }
-
-    // If the root satisfies our conditions, yield it
-    if (condition(root, path)) {
-        yield ({ root, path, key });
-        return;
-    }
-
-    // Then dfs it, looking for more
-
-    // Case 2: Root is a single value
-    else if (['string', 'number', 'boolean'].indexOf(typeof (root)) > -1) {
-        return;
-    }
-
-    // Case 3: Root is an Object or Array
-    else if (root.constructor === Object || root.constructor === Array) {
-        for (let k of Object.keys(root)) {
-            for (let i of dfs_find(root[k], condition, [...path, String(k)], k)) {
-                yield i;
-            }
-        };
-    }
-}
+import { dfs_find } from '../custom/Utility/ObjectSearchUtils';
 
 // Type: [{ module: React.FC<{data: data_obj, ...}>, data_selector: Object -> [data_obj] }]
-const mappers = [
+const module_generators = [
     {
         'Module': TimeSegmentsModule,
         'data_selector': (v, path) => !path.find(x => x === 'people') && v.constructor === Array && v.filter((vchild) => vchild?._type === 'time_segment').length > 0,
@@ -54,8 +22,18 @@ const mappers = [
     },
     {
         'Module': TimeSegmentsModule,
-        'data_selector': (v, path) => v._type == 'action_interval',
+        'data_selector': (v, path) => v._type === 'action_interval',
         'data_mapper': ({ root, path }) => root['actions'].map(({ start_time: { video_time: start }, end_time: { video_time: end }, verb, noun }) => { return { start, end, label: `${verb} ${noun}` } }),
+    },
+    {
+        'Module': TimeSegmentsModule,
+        'data_selector': (v, path) => v.constructor === Array && v.length > 0 && v[0]._type === 'vq_query_set',
+        'data_mapper': ({ root, path }) => {
+            return root.map((query_set) => {
+                const frames = query_set['response_track']['frames'].map(({ video_frame: { frame_number } }) => frame_number);
+                return { start: Math.min(...frames) / 30.0, end: Math.max(...frames) / 30.0, label: query_set['object_title'] };
+            })
+        }
     }
 ]
 
@@ -63,7 +41,7 @@ export default function VideoModules(props) {
     const { data, annotations, progress, videoRef, setPlaying, duration } = props;
     const extracted_modules = useMemo(
         () => {
-            return mappers.map(
+            return module_generators.map(
                 ({ Module, data_selector, data_mapper }) => {
                     const data_generator = (annotations) => {
                         const res = [];

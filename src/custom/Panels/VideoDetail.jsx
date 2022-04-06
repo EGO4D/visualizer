@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import ReactPlayer from "react-player"; /* dependency */
 import JSONSpeedViewer from "../JSONSpeedViewer";
 import CustomLabelRenderer from "../CustomLabelRenderer";
@@ -11,9 +11,9 @@ import ErrorPane from "../../components/ErrorPane"
 
 import "./VideoDetail.scss";
 import { Link } from "react-router-dom";
+import useBBoxes from "../Utility/useBBoxes";
 
 export default function VideoDetail({ id }) {
-    console.log("re-render VideoDetail");
     const {
         data: item,
         isFinished,
@@ -24,7 +24,7 @@ export default function VideoDetail({ id }) {
     const [progress, setProgress] = React.useState(0);
     const [duration, setDuration] = React.useState(0);
     const [playing, setPlaying] = useState(false);
-    const [bboxes, setBboxes] = useState({});
+    const [playerReady, setPlayerReady] = useState(false);
     const canvasRef = useRef();
     const videoRef = useRef();
 
@@ -39,15 +39,6 @@ export default function VideoDetail({ id }) {
     useEffect(() => {
         setSelectedTab(Object.keys(data?.annotations ?? [''])[0]);
     }, [data])
-
-    // TODO: remove temp bbox code for testing
-    useEffect(() => {
-        const test_bboxes = {};
-        [...Array(1000).keys()].forEach(frame => {
-            test_bboxes[frame] = [{ label: 'test-bbox', x: frame, y: frame*0.5, width: 1800-frame, height: 100 }]
-        });
-        setBboxes(test_bboxes);
-    }, [])
 
     // Annotation Units
     // TODO: Get image paths from annotations instead of hardcoding them
@@ -99,57 +90,7 @@ export default function VideoDetail({ id }) {
         </>
     }, [selectedTab, data])
 
-    // Video Units
-    const step = useCallback(
-        (ctx, now, metadata) => {
-            const frame = Math.round(metadata.mediaTime * 30); // TODO: get framerate from fps in data
-            const cur_bboxes = bboxes[frame] ?? []
-            ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-
-            ctx.lineWidth = 5;
-            cur_bboxes.forEach(bbox => {
-                ctx.strokeRect(
-                    bbox.x / dimensions[0] * canvasRef.current.width,
-                    bbox.y / dimensions[1] * canvasRef.current.height,
-                    bbox.width / dimensions[0] * canvasRef.current.width,
-                    bbox.height / dimensions[1] * canvasRef.current.height,
-                );
-            });
-            // ctx.strokeRect(20, 20, 150, 100);
-
-            ctx.font = "30px Arial";
-
-            ctx.fillText(
-                "Frame: " +
-                frame,
-                100,
-                canvasRef.current.height / 2
-            );
-        },
-        [canvasRef, bboxes, dimensions]
-    );
-
-    function useRVFC(videoRef, canvasRef, steps) {
-        const callback = useCallback(
-            (now, metadata) => {
-                if (!canvasRef.current) return;
-                const ctx = canvasRef.current.getContext("2d");
-
-                steps.forEach((step) => step(ctx, now, metadata));
-
-                const video = videoRef.current.getInternalPlayer()
-                !!video && video.requestVideoFrameCallback(callback);
-            },
-            [canvasRef, videoRef, steps]
-        );
-
-        useEffect(() => {
-            const video = !!videoRef.current && videoRef.current.getInternalPlayer();
-            !!video && video.requestVideoFrameCallback(callback);
-        }, [videoRef, callback]);
-    }
-
-    // useRVFC(videoRef, canvasRef, [step]);
+    useBBoxes({annotations: data?.annotations[selectedTab], videoRef, canvasRef, dimensions});
 
     const videoModules = data?.annotations[selectedTab] && <VideoModules data={data} annotations={data?.annotations[selectedTab]} progress={progress} videoRef={videoRef} setPlaying={setPlaying} duration={duration} />;
 
@@ -172,6 +113,7 @@ export default function VideoDetail({ id }) {
                             width={'100%'}
                             height={'auto'}
                             progressInterval={350}
+                            onReady={() => setPlayerReady(true)}
                             onProgress={({ playedSeconds }) => {
                                 setProgress(playedSeconds);
                             }}
@@ -184,7 +126,7 @@ export default function VideoDetail({ id }) {
                             onPause={() => setPlaying(false)}
                         />
 
-                        <ResponsiveCanvas className={"video-canvas"} ref={canvasRef} reactPlayerRef={videoRef} scale={2} />
+                        <ResponsiveCanvas className={"video-canvas"} ref={canvasRef} reactPlayerRef={videoRef} scale={2} playerReady={playerReady} />
                     </div>
                     { videoModules }
                 </div>
