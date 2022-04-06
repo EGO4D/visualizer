@@ -8,16 +8,20 @@ import VideoTime from "./Tree Labels/VideoTime";
 import ObjectStateChange from "./Tree Labels/ObjectStateChange";
 
 import "./CustomLabelRenderer.scss"
+import ResponseTrack from "./Tree Labels/ResponseTrack";
+import VisualCrop from "./Tree Labels/VisualCrop";
 
 const RENDERERS = {
     'frame_number': FrameNumber,
-    'video_time': VideoTime,
     'labeled_frame': LabeledFrame,
     'nlq_query_set': NLQQuerySet,
-    'vq_query_set': VQQuerySet,
+    'object_state_change': ObjectStateChange,
+    'response_track': ResponseTrack,
     'templatized_query': TemplatizedQuery,
     'time_segment': TimeSegment,
-    'object_state_change': ObjectStateChange,
+    'video_time': VideoTime,
+    'visual_crop': VisualCrop,
+    'vq_query_set': VQQuerySet,
 }
 
 export default function CustomLabelRenderer({ root, path, key, videoRef, setPlaying }) {

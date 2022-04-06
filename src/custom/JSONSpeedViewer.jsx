@@ -31,12 +31,14 @@ function JSONSpeedViewer({ data, customRenderer, videoRef, setPlaying, expandThr
             const arrayCount = root.constructor === Array && <span className='tree-label-array-count'> {` [ ${Object.keys(root).length} ]`} </span>;
             let label = <span><b>{key}</b>{arrayCount}</span>
             label = '_type' in root ? (customRenderer({ root, path, key, videoRef, setPlaying }) ?? label) : label
+            // Optimization to speed up rendering
+            const renderChildren = root.constructor !== Array || (root.constructor == Array && root.length < 1000);
 
             return [{
                 'id': [...path, String(key)].join('/'),
                 label,
                 // 'selectable': root.constructor == Array,
-                'children': keys.map((k) => json_to_treenodeinfo(root[k], [...path, String(k)], k)).flat().filter(v => !!v)
+                'children': renderChildren ? keys.map((k) => json_to_treenodeinfo(root[k], [...path, String(k)], k)).flat().filter(v => !!v) : []
             }]
         }
 
@@ -44,10 +46,13 @@ function JSONSpeedViewer({ data, customRenderer, videoRef, setPlaying, expandThr
         return;
     }
 
-    const memoized_graph = useMemo(() =>
-        json_to_treenodeinfo(data, [], '')[0].children,
-        [data]
-    )
+    const memoized_graph = useMemo(() => {
+        let start = new Date();
+        console.log("json_to_treenode_info start");
+        const res = json_to_treenodeinfo(data, [], '')[0].children;
+        console.log("json_to_treenode_info took ", new Date()-start, " milliseconds");
+        return res;
+    }, [data])
 
     return (
         <div className="json-viewer-wrapper" style={{ flex: '1 1 auto', minHeight: '1px' }}>

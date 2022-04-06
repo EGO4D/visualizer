@@ -10,9 +10,11 @@ const FIXED_COLORS = {
 
 const COLORS = ['#e8c1a0', '#f47560', '#f1e15b', '#e8a838', '#61cdbb', '#97e3d5'];
 
+// selectors should return bool
 // mappers should return [{ label, kf: keyframes, interpolate: bool, min: int, max: int }]
 const bbox_generators = [
     {
+        'tabs': ['vq'],
         'data_selector': (v, path) => v._type === 'response_track',
         'data_mapper': ({ root, path }) => {
             const res_obj = {}; // label -> obj
@@ -29,21 +31,44 @@ const bbox_generators = [
         }
     },
     {
+        'tabs': ['vq'],
         'data_selector': (v, path) => v._type === 'vq_query_set',
         'data_mapper': ({ root, path }) => {
             let { x, y, width, height, video_frame: { frame_number: frame } } = root['visual_crop'];
             return [{ label: `${root['object_title']}`, kf: keyframes([{ time: frame, value: [x, y, width, height] }]), interpolate: false, min: frame, max: frame }];
         }
-    }
+    },
+    {
+        'tabs': ['av'],
+        'data_selector': (v, path) => v._type === 'av_person' && v['tracking_paths'].length > 0,
+        'data_mapper': ({ root, path }) => {
+            const res_obj = {}; // label -> obj
+            root['tracking_paths'].forEach(({ video_frame: { frame_number: frame }, bounding_boxes }) => {
+                bounding_boxes.forEach(({ label, x, y, width, height }) => {
+                    let obj = res_obj[label] ?? { label, kf: keyframes(), interpolate: false, min: frame, max: frame };
+                    obj.kf.add({ time: frame, value: [x, y, width, height] });
+                    obj.min = Math.min(obj.min, frame);
+                    obj.max = Math.max(obj.max, frame);
+                    res_obj[label] = obj;
+                });
+            });
+            return Object.values(res_obj);
+        }
+    },
 ]
 
-export default function useBBoxes({ annotations, videoRef, canvasRef, dimensions }) {
+export default function useBBoxes({ annotations, videoRef, canvasRef, dimensions, selectedTab }) {
     const bboxes = useMemo(
         () => {
+            let start = new Date();
+            console.log("useBboxes start");
             const bboxes = [];
             const label_colors = { ...FIXED_COLORS };
             for (let bbox_gen of bbox_generators) {
-                const { data_selector, data_mapper } = bbox_gen;
+                const { data_selector, data_mapper, tabs } = bbox_gen;
+                if (tabs && !tabs.includes(selectedTab)){
+                    continue;
+                }
                 for (let obj of dfs_find(annotations, data_selector)) {
                     const { root, path } = obj;
                     const bbox_objs = data_mapper({ root, path });
@@ -56,8 +81,9 @@ export default function useBBoxes({ annotations, videoRef, canvasRef, dimensions
                     }
                 }
             }
+            console.log("useBboxes took ", new Date() - start, " milliseconds");
             return bboxes;
-        }, [annotations]);
+        }, [annotations, selectedTab]);
 
 
     /* cv2.rectangle(img,
@@ -69,10 +95,13 @@ export default function useBBoxes({ annotations, videoRef, canvasRef, dimensions
     const step = useCallback(
         (ctx, now, metadata) => {
             const frame = Math.round(metadata.mediaTime * 30); // TODO: get framerate from fps in data
-            const cur_bboxes = bboxes.filter(({ min, max }) => frame >= min && frame <= max).map(({ label, color, kf, interpolate }) => {
-                let [x, y, width, height] = interpolate ? kf.value(frame) : kf.get(frame).value;
+            const cur_bboxes = bboxes.map(({ label, color, kf, interpolate, min, max }) => {
+                if (frame < min || frame > max) { return null }
+                let kf_obj = interpolate ? kf.value(frame) : kf.get(frame)?.value;
+                if (!kf_obj) { return null }
+                let [x, y, width, height] = kf_obj
                 return { label, color, x, y, width, height };
-            })
+            }).filter(x => !!x);
             ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
 
             ctx.lineWidth = 5;
@@ -89,7 +118,7 @@ export default function useBBoxes({ annotations, videoRef, canvasRef, dimensions
                 ctx.fillRect(
                     x / dimensions[0] * canvasRef.current.width - ctx.lineWidth / 2,
                     (y - 30) / dimensions[1] * canvasRef.current.height,
-                    ctx.measureText(label).width + (6 / dimensions[1] * canvasRef.current.height),
+                    ctx.measureText(label).width + (10 / dimensions[1] * canvasRef.current.height),
                     30 / dimensions[1] * canvasRef.current.height,
                 )
                 ctx.fillStyle = "#fff";

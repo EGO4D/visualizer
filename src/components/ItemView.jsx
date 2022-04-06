@@ -9,6 +9,7 @@ import {
   NavbarGroup,
   NavbarDivider,
   NavbarHeading,
+  Spinner,
 } from "@blueprintjs/core";
 import { JSONItem } from "../renderers/JSONItem";
 import { getHostname } from "../utils";
@@ -62,7 +63,7 @@ function ItemView({
         {isLoading ? (
           <div className="item-dynamic">
             <ErrorPane error={error} />
-            <h1 className="item-view-message">Loading...</h1>
+            <h1 className="item-view-message"><Spinner /> Loading...</h1>
           </div>
         ) : isFinished ? (
           <div className="item-dynamic">
@@ -87,30 +88,7 @@ function ItemView({
           <div className="item-dynamic">
             <div className="item-view-message item-view-no-data">
               <ErrorPane error={error} />
-              <h3>
-                Thanks for using the <code>$ mephisto review</code> interface.
-                Here are a few ways to get started:
-              </h3>
-              <h3>
-                1. Review data from a .csv or{" "}
-                <a href="https://jsonlines.org/">.jsonl</a> file
-              </h3>
-              <pre>
-                $ cat sample-data<span className="highlight">.json</span> |
-                mephisto review review-app/build/{" "}
-                <span className="highlight">--json</span> --stdout
-              </pre>
-              <pre>
-                $ cat sample-data<span className="highlight">.csv</span> |
-                mephisto review review-app/build/{" "}
-                <span className="highlight">--csv</span> --stdout
-              </pre>
-              <h3>2. Review data from the Mephisto database</h3>
-              <pre>
-                $ mephisto review review-app/build/{" "}
-                <span className="highlight">--db mephisto_db_task_name</span>{" "}
-                --stdout
-              </pre>
+              <h1 className="item-view-message">Error loading data</h1>
             </div>
           </div>
         )}

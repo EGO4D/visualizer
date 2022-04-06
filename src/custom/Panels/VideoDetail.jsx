@@ -37,7 +37,7 @@ export default function VideoDetail({ id }) {
     const dimensions = data?.quick_info?.metadata?.dimensions.slice(1, -1).split(",").map(x => x.trim()).map(parseFloat);
 
     useEffect(() => {
-        setSelectedTab(Object.keys(data?.annotations ?? [''])[0]);
+        !selectedTab && setSelectedTab(Object.keys(data?.annotations ?? [''])[0]);
     }, [data])
 
     // Annotation Units
@@ -90,8 +90,9 @@ export default function VideoDetail({ id }) {
         </>
     }, [selectedTab, data])
 
-    useBBoxes({annotations: data?.annotations[selectedTab], videoRef, canvasRef, dimensions});
+    useBBoxes({annotations: data?.annotations[selectedTab], videoRef, canvasRef, dimensions, selectedTab});
 
+    // const videoModules = null;
     const videoModules = data?.annotations[selectedTab] && <VideoModules data={data} annotations={data?.annotations[selectedTab]} progress={progress} videoRef={videoRef} setPlaying={setPlaying} duration={duration} />;
 
     const renderedItem = data && (

@@ -12,7 +12,7 @@ import { dfs_find } from '../custom/Utility/ObjectSearchUtils';
 const module_generators = [
     {
         'Module': TimeSegmentsModule,
-        'data_selector': (v, path) => !path.find(x => x === 'people') && v.constructor === Array && v.filter((vchild) => vchild?._type === 'time_segment').length > 0,
+        'data_selector': (v, path) => !path.includes('people') && v.constructor === Array && v.filter((vchild) => vchild?._type === 'time_segment').length > 0,
         'data_mapper': ({ root, path }) => root.filter((vchild) => vchild?._type === 'time_segment').map(({ start_time: start, end_time: end, label }) => { return { start, end, label } }),
     },
     {
@@ -41,7 +41,9 @@ export default function VideoModules(props) {
     const { data, annotations, progress, videoRef, setPlaying, duration } = props;
     const extracted_modules = useMemo(
         () => {
-            return module_generators.map(
+            var start = new Date();
+            console.log("video_modules start");
+            const res = module_generators.map(
                 ({ Module, data_selector, data_mapper }) => {
                     const data_generator = (annotations) => {
                         const res = [];
@@ -61,6 +63,9 @@ export default function VideoModules(props) {
                         })
                 }
             ).flat()
+            var end = new Date();
+            console.log("video_modules took ", end-start, " milliseconds");
+            return res;
         }, [annotations]);
 
     const modules = extracted_modules.map(({ Module, label, extracted_data }) =>
