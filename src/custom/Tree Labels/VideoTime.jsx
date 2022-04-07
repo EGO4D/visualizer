@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function VideoTime({ data, path, key, videoRef, setPlaying }) {
+export default function VideoTime({ data, path, key, videoRef, setPlaying, videoOffset = 0 }) {
     // data has type { video_time: float }
     // assert(!!data && data.constructor == Array)
 

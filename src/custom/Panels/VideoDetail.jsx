@@ -12,6 +12,7 @@ import ErrorPane from "../../components/ErrorPane"
 import "./VideoDetail.scss";
 import { Link } from "react-router-dom";
 import useBBoxes from "../Utility/useBBoxes";
+import VideoControls from "../../components/VideoControls";
 
 export default function VideoDetail({ id }) {
     const {
@@ -73,7 +74,7 @@ export default function VideoDetail({ id }) {
     const annotation_trees = React.useMemo(() => {
         return data && <>
             <h3>Info:</h3>
-            <JSONSpeedViewer data={data.quick_info} customRenderer={CustomLabelRenderer} videoRef={videoRef} setPlaying={setPlaying} />
+            <JSONSpeedViewer data={data.quick_info} customRenderer={CustomLabelRenderer} videoRef={videoRef} setPlaying={setPlaying} videoOffset={data['_video_offset']} />
 
             <h3>Annotations:</h3>
             <Tabs selectedTabId={selectedTab} onChange={setSelectedTab} animate={true}>
@@ -81,7 +82,7 @@ export default function VideoDetail({ id }) {
                     Object.keys(data.annotations).map((k) =>
                         <Tab id={k} title={k} key={k} panel={
                             <div style={{ display: 'flex', height: '100%' }}>
-                                <JSONSpeedViewer data={data.annotations[k]} customRenderer={CustomLabelRenderer} videoRef={videoRef} setPlaying={setPlaying} expandThreshold={26} />
+                                <JSONSpeedViewer data={data.annotations[k]} customRenderer={CustomLabelRenderer} videoRef={videoRef} setPlaying={setPlaying} videoOffset={data['_video_offset']} expandThreshold={26} />
                             </div>
                         } />
                     )
@@ -129,6 +130,9 @@ export default function VideoDetail({ id }) {
 
                         <ResponsiveCanvas className={"video-canvas"} ref={canvasRef} reactPlayerRef={videoRef} scale={2} playerReady={playerReady} />
                     </div>
+
+                    <VideoControls videoRef={videoRef} progress={progress} />
+
                     { videoModules }
                 </div>
                 <div className="segment-viewer">

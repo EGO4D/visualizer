@@ -5,7 +5,7 @@ import SpeedTree from "./Utility/SpeedTree";
 
 import "./JSONSpeedViewer.scss"
 
-function JSONSpeedViewer({ data, customRenderer, videoRef, setPlaying, expandThreshold }) {
+function JSONSpeedViewer({ data, customRenderer, videoRef, setPlaying, videoOffset, expandThreshold }) {
 
     // Returns a list of node objects
     function json_to_treenodeinfo(root, path, key) {
@@ -29,10 +29,15 @@ function JSONSpeedViewer({ data, customRenderer, videoRef, setPlaying, expandThr
             keys.sort(keyCompare);
 
             const arrayCount = root.constructor === Array && <span className='tree-label-array-count'> {` [ ${Object.keys(root).length} ]`} </span>;
-            let label = <span><b>{key}</b>{arrayCount}</span>
-            label = '_type' in root ? (customRenderer({ root, path, key, videoRef, setPlaying }) ?? label) : label
+
+            const { label: customLabel, overrides } = customRenderer({ root, path, key, videoRef, setPlaying, videoOffset });
+            let label = customLabel ?? <span><b>{key}</b>{arrayCount}</span>
             // Optimization to speed up rendering
-            const renderChildren = root.constructor !== Array || (root.constructor == Array && root.length < 1000);
+            const renderChildren = (
+                overrides?.renderChildren != undefined
+                    ? overrides.renderChildren
+                    : root.constructor !== Array || (root.constructor == Array && root.length < 1000)
+            );
 
             return [{
                 'id': [...path, String(key)].join('/'),
@@ -48,9 +53,9 @@ function JSONSpeedViewer({ data, customRenderer, videoRef, setPlaying, expandThr
 
     const memoized_graph = useMemo(() => {
         let start = new Date();
-        console.log("json_to_treenode_info start");
+        // console.log("json_to_treenode_info start");
         const res = json_to_treenodeinfo(data, [], '')[0].children;
-        console.log("json_to_treenode_info took ", new Date()-start, " milliseconds");
+        // console.log("json_to_treenode_info took ", new Date()-start, " milliseconds");
         return res;
     }, [data])
 
@@ -68,8 +73,9 @@ function keyCompare(a, b) {
     const time_segments = ['video_frame', 'start_time', 'end_time', 'label',];
     const bboxes = ['x', 'y', 'width', 'height',];
     const fho_frames = ['pre_45', 'pre_30', 'pre_15', 'pre_frame', 'contact_frame', 'pnr_frame', 'post_frame',];
+    const fho_lta = ['interval_start_time', 'interval_end_time', 'interval_start_frame', 'interval_end_frame'];
 
-    const GLOBAL_ORDER = [...quick_info, ...benchmarks, ...time_segments, ...bboxes, ...fho_frames];
+    const GLOBAL_ORDER = [...quick_info, ...benchmarks, ...time_segments, ...bboxes, ...fho_frames, ...fho_lta];
     var [indexA, indexB] = [GLOBAL_ORDER.indexOf(a), GLOBAL_ORDER.indexOf(b)];
     indexA = indexA === -1 ? GLOBAL_ORDER.length : indexA
     indexB = indexB === -1 ? GLOBAL_ORDER.length : indexB

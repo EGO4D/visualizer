@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function NLQQuerySet({ data, path, key, videoRef, setPlaying }) {
+export default function NLQQuerySet({ data, path, key, videoRef, setPlaying, videoOffset = 0 }) {
     /* data has type { 'query':{
         '_type': 'templatized_query',
         'template': lq['template'] if 'template' in lq else None,
@@ -12,15 +12,19 @@ export default function NLQQuerySet({ data, path, key, videoRef, setPlaying }) {
         'raw_tags': lq['raw_tags'],
     },
     'response': {
-        '_type': 'templatized_query_response',
-        'start_time': lq['video_start_sec'],
-        'end_time': lq['video_end_sec'],
+        '_type': 'time_segment',
+        'start_time': {
+            'video_time': lq['video_start_sec'],
+        },
+        'end_time': {
+            'video_time': lq['video_end_sec']
+        },
     } } */
 
     const onClick = (e) => {
         e.stopPropagation();
         videoRef?.current &&
-            videoRef.current.seekTo(data['response']['start_time'], "seconds");
+            videoRef.current.seekTo(data['response']['start_time']['video_time'], "seconds");
     }
 
     return <span

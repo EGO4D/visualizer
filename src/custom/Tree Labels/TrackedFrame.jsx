@@ -1,12 +1,11 @@
 import React from 'react'
 
-export default function VisualCrop({ data, path, key, videoRef, setPlaying, videoOffset = 0 }) {
-    // data has type { video_frame: {frame_number: int}, x, y, width, height }
+export default function TrackedFrame({ data, path, key, videoRef, setPlaying, videoOffset = 0 }) {
+    // data has type { video_frame: { frame_number: int }, bounding_boxes: [{ ... }] }
 
     const onClick = (e) => {
         e.stopPropagation();
-        !!setPlaying && setPlaying(false);
-        videoRef?.current && videoRef.current.seekTo(data['video_frame']['frame_number'] / 30.0 + videoOffset + 1/120, "seconds");
+        videoRef?.current && videoRef.current.seekTo(data['video_frame']['frame_number'] / 30 + 1/120 + videoOffset, "seconds");
     }
 
     return <span

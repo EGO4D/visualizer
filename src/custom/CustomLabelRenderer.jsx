@@ -10,6 +10,7 @@ import ObjectStateChange from "./Tree Labels/ObjectStateChange";
 import "./CustomLabelRenderer.scss"
 import ResponseTrack from "./Tree Labels/ResponseTrack";
 import VisualCrop from "./Tree Labels/VisualCrop";
+import TrackedFrame from "./Tree Labels/TrackedFrame";
 
 const RENDERERS = {
     'frame_number': FrameNumber,
@@ -19,16 +20,27 @@ const RENDERERS = {
     'response_track': ResponseTrack,
     'templatized_query': TemplatizedQuery,
     'time_segment': TimeSegment,
+    'tracked_frame': TrackedFrame,
+    'tracking_path': ResponseTrack,
     'video_time': VideoTime,
     'visual_crop': VisualCrop,
     'vq_query_set': VQQuerySet,
 }
 
-export default function CustomLabelRenderer({ root, path, key, videoRef, setPlaying }) {
+const OVERRIDES = {
+    'frame_number': { renderChildren: false },
+    'labeled_frame': { renderChildren: false },
+    'video_time': { renderChildren: false },
+}
 
-    return (
-        root['_type'] in RENDERERS
-            ? RENDERERS[root['_type']]({ data: root, path, key, videoRef, setPlaying })
-            : null
-    )
+export default function CustomLabelRenderer({ root, path, key, videoRef, setPlaying, videoOffset }) {
+
+    return ({
+        label: root['_type'] in RENDERERS
+            ? RENDERERS[root['_type']]({ data: root, path, key, videoRef, setPlaying, videoOffset })
+            : null,
+        overrides: root['_type'] in OVERRIDES
+            ? OVERRIDES[root['_type']]
+            : null,
+    })
 }

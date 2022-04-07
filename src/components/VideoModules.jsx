@@ -13,12 +13,12 @@ const module_generators = [
     {
         'Module': TimeSegmentsModule,
         'data_selector': (v, path) => !path.includes('people') && v.constructor === Array && v.filter((vchild) => vchild?._type === 'time_segment').length > 0,
-        'data_mapper': ({ root, path }) => root.filter((vchild) => vchild?._type === 'time_segment').map(({ start_time: start, end_time: end, label }) => { return { start, end, label } }),
+        'data_mapper': ({ root, path }) => root.filter((vchild) => vchild?._type === 'time_segment').map(({ start_time: { video_time: start }, end_time: { video_time: end }, label }) => { return { start, end, label } }),
     },
     {
         'Module': TimeSegmentsModule,
         'data_selector': (v, path) => v.constructor === Array && v.filter((vchild) => vchild?._type === 'nlq_query_set').length > 0,
-        'data_mapper': ({ root, path }) => root.filter((vchild) => vchild?._type === 'nlq_query_set').map(({ query: { query: label }, response: { start_time: start, end_time: end } }) => { return { start, end, label } }),
+        'data_mapper': ({ root, path }) => root.filter((vchild) => vchild?._type === 'nlq_query_set').map(({ query: { query: label }, response: { start_time: { video_time: start }, end_time: { video_time: end } } }) => { return { start, end, label } }),
     },
     {
         'Module': TimeSegmentsModule,
@@ -42,7 +42,7 @@ export default function VideoModules(props) {
     const extracted_modules = useMemo(
         () => {
             var start = new Date();
-            console.log("video_modules start");
+            // console.log("video_modules start");
             const res = module_generators.map(
                 ({ Module, data_selector, data_mapper }) => {
                     const data_generator = (annotations) => {
@@ -63,8 +63,7 @@ export default function VideoModules(props) {
                         })
                 }
             ).flat()
-            var end = new Date();
-            console.log("video_modules took ", end-start, " milliseconds");
+            // console.log("video_modules took ", new Date() - start, " milliseconds");
             return res;
         }, [annotations]);
 

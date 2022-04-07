@@ -1,13 +1,13 @@
 import React from 'react'
 
-export default function LabeledFrame({ data, path, key, videoRef, setPlaying }) {
-    // data has type { video_frame: int, label: str, ?video_time: float }
+export default function LabeledFrame({ data, path, key, videoRef, setPlaying, videoOffset = 0 }) {
+    // data has type { video_frame: { frame_number: int }, label: str, ?video_time: { video_time: float } }
     // assert(!!data && data.constructor == Array)
 
     const onClick = (e) => {
         e.stopPropagation();
         videoRef?.current &&
-            videoRef.current.seekTo(data['video_time'] ?? data['video_frame']/30, "seconds");
+            videoRef.current.seekTo(data['video_frame']['frame_number']/30 + videoOffset + 1/120, "seconds");
         // !!setPlaying && setPlaying(true);
     }
 
