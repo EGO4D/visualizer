@@ -1,16 +1,18 @@
 const ptIconWrapper = (path, viewboxDefault = 16) => {
     return (
-        <svg
-            version="1.1"
-            xmlns="http://www.w3.org/2000/svg"
-            x="0px"
-            y="0px"
-            width="16px"
-            height="16px"
-            viewBox={`0 0 ${viewboxDefault} ${viewboxDefault}`}
-        >
-            {path}
-        </svg>
+        <span className="bp3-icon">
+            <svg
+                version="1.1"
+                xmlns="http://www.w3.org/2000/svg"
+                x="0px"
+                y="0px"
+                width="16px"
+                height="16px"
+                viewBox={`0 0 ${viewboxDefault} ${viewboxDefault}`}
+            >
+                {path}
+            </svg>
+        </span>
     );
 };
 

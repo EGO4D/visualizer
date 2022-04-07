@@ -75,7 +75,7 @@ function keyCompare(a, b) {
     const fho_frames = ['pre_45', 'pre_30', 'pre_15', 'pre_frame', 'contact_frame', 'pnr_frame', 'post_frame',];
     const fho_lta = ['interval_start_time', 'interval_end_time', 'interval_start_frame', 'interval_end_frame'];
 
-    const GLOBAL_ORDER = [...quick_info, ...benchmarks, ...time_segments, ...bboxes, ...fho_frames, ...fho_lta];
+    const GLOBAL_ORDER = [...fho_frames, ...quick_info, ...benchmarks, ...time_segments, ...bboxes, ...fho_lta];
     var [indexA, indexB] = [GLOBAL_ORDER.indexOf(a), GLOBAL_ORDER.indexOf(b)];
     indexA = indexA === -1 ? GLOBAL_ORDER.length : indexA
     indexB = indexB === -1 ? GLOBAL_ORDER.length : indexB

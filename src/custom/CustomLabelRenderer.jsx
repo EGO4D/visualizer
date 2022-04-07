@@ -29,7 +29,7 @@ const RENDERERS = {
 
 const OVERRIDES = {
     'frame_number': { renderChildren: false },
-    'labeled_frame': { renderChildren: false },
+    // 'labeled_frame': { renderChildren: false }, // narrations
     'video_time': { renderChildren: false },
 }
 
