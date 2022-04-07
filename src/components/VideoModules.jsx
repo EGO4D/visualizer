@@ -12,22 +12,22 @@ import { dfs_find } from '../custom/Utility/ObjectSearchUtils';
 const module_generators = [
     {
         'Module': TimeSegmentsModule,
-        'data_selector': (v, path) => !path.includes('people') && v.constructor === Array && v.filter((vchild) => vchild?._type === 'time_segment').length > 0,
+        'data_selector': (v, path) => !path.includes('people') && v?.constructor === Array && v.filter((vchild) => vchild?._type === 'time_segment').length > 0,
         'data_mapper': ({ root, path }) => root.filter((vchild) => vchild?._type === 'time_segment').map(({ start_time: { video_time: start }, end_time: { video_time: end }, label }) => { return { start, end, label } }),
     },
     {
         'Module': TimeSegmentsModule,
-        'data_selector': (v, path) => v.constructor === Array && v.filter((vchild) => vchild?._type === 'nlq_query_set').length > 0,
+        'data_selector': (v, path) => v?.constructor === Array && v.filter((vchild) => vchild?._type === 'nlq_query_set').length > 0,
         'data_mapper': ({ root, path }) => root.filter((vchild) => vchild?._type === 'nlq_query_set').map(({ query: { query: label }, response: { start_time: { video_time: start }, end_time: { video_time: end } } }) => { return { start, end, label } }),
     },
     {
         'Module': TimeSegmentsModule,
-        'data_selector': (v, path) => v._type === 'action_interval',
+        'data_selector': (v, path) => v?._type === 'action_interval',
         'data_mapper': ({ root, path }) => root['actions'].map(({ start_time: { video_time: start }, end_time: { video_time: end }, verb, noun }) => { return { start, end, label: `${verb} ${noun}` } }),
     },
     {
         'Module': TimeSegmentsModule,
-        'data_selector': (v, path) => v.constructor === Array && v.length > 0 && v[0]._type === 'vq_query_set',
+        'data_selector': (v, path) => v?.constructor === Array && v?.length > 0 && v[0]?._type === 'vq_query_set',
         'data_mapper': ({ root, path }) => {
             return root.map((query_set) => {
                 const frames = query_set['response_track']['frames'].map(({ video_frame: { frame_number } }) => frame_number);
