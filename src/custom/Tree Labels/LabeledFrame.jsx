@@ -7,7 +7,7 @@ export default function LabeledFrame({ data, path, key, videoRef, setPlaying, vi
     const onClick = (e) => {
         e.stopPropagation();
         videoRef?.current &&
-            videoRef.current.seekTo(data['video_frame']['frame_number']/30 + videoOffset + 1/120, "seconds");
+            videoRef.current.seekTo(data['video_frame']['frame_number']/30 + ( videoOffset ?? 1/120), "seconds");
         // !!setPlaying && setPlaying(true);
     }
 

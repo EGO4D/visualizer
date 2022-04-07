@@ -6,7 +6,7 @@ export default function VisualCrop({ data, path, key, videoRef, setPlaying, vide
     const onClick = (e) => {
         e.stopPropagation();
         !!setPlaying && setPlaying(false);
-        videoRef?.current && videoRef.current.seekTo(data['video_frame']['frame_number'] / 30.0 + videoOffset + 1/120, "seconds");
+        videoRef?.current && videoRef.current.seekTo(data['video_frame']['frame_number'] / 30.0 + ( videoOffset ?? 1/120), "seconds");
     }
 
     return <span
