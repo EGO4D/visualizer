@@ -4,10 +4,14 @@
     flex: 10 1 auto;
     border-radius: 0 4px 4px 0;
     border-left: none;
-}
 
-.CodeMirror {
-    height: auto;
+    .CodeMirror-placeholder {
+        color: grey;
+    }
+
+    .CodeMirror {
+        height: auto;
+    }
 }
 
 .bp3-navbar .filterbox-search-icon {

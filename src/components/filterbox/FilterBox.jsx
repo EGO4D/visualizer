@@ -3,36 +3,26 @@ import React, { useEffect } from "react";
 
 import ReactFilterBox, { SimpleResultProcessing, GridDataAutoCompleteHandler, FilterQueryParser } from "react-filter-box";
 import "react-filter-box/lib/react-filter-box.css"
-import "./FilterBox.css"
+import "./FilterBox.scss"
 
 import { filter_options } from "./filterData";
 import useStateWithUrlParam from "../../hooks/useStateWithUrlParam";
 
-//extend this class to add your custom operator
-class CustomAutoComplete extends GridDataAutoCompleteHandler {
+const sample_queries = [
+    'benchmarks include moments',
+    'video_uid == a37f501d-5cc1-4cc2-8ac2-1ec4e66a86d2',
+    'duration > 5000',
+    'scenarios include Cooking',
+    'benchmarks include fho_hands AND modalities include imu',
+    'narrations contain "instrument"',
+    'is_stereo == true',
+    'split_av == train',
+    'split_em == val',
+    'split_fho == multi',
+    'splits include fho_scod-train'
+]
 
-    // override this method to add new your operator
-    // needOperators(parsedCategory) {
-    //     var result = super.needOperators(parsedCategory);
-
-    //     var eq_index = result.indexOf('==');
-    //     if (eq_index !== -1) {
-    //         result[eq_index] = '=';
-    //     }
-    //     return result;
-    // }
-
-    //override to custom to indicate you want to show your custom date time
-    // needValues(parsedCategory, parsedOperator) {
-    //     console.log(" -- needValues -- ")
-    //     console.log(parsedCategory, parsedOperator)
-    //     if (parsedOperator == "after") {
-    //         return [{ customType: "date" }]
-    //     }
-
-    //     return super.needValues(parsedCategory, parsedOperator);
-    // }
-}
+class CustomAutoComplete extends GridDataAutoCompleteHandler { }
 
 class CustomResultProcessing extends SimpleResultProcessing {
     filter(row, fieldOrLabel, operator, value) {
@@ -99,6 +89,7 @@ export default function FilterBox({ filterData, setFilteredData }) {
             onChange={(q) => setQuery(q)}
             onParseOk={onParseOk}
             autoCompleteHandler={autoCompleteHandler}
+            editorConfig={{ placeholder: `Enter a filter, e.g. ${sample_queries[Math.floor(Math.random() * sample_queries.length)]}` }}
         />
     </>
 };
