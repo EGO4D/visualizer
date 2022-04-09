@@ -1,7 +1,5 @@
-// Copyright (c) Meta Platforms, Inc. and affiliates. All Rights Reserved.
-
 import React, { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import { useMephistoReview } from "../shims/mephisto-review-hook";
 import {
   Button,
@@ -21,36 +19,27 @@ import { CSVLink } from "react-csv";
 import FilterBox from "./filterbox/FilterBox";
 import Analyze from "../custom/Panels/Analyze";
 
-import "./CollectionView.scss"
 import Browse from "../custom/Panels/Browse";
 import VersionHeader from "./VersionHeader";
 import useStateWithUrlParam from "../hooks/useStateWithUrlParam";
 // import VideoDetail from "../custom/Panels/VideoDetail";
+import "./CollectionView.scss"
 
 
 function CollectionView({
   itemRenderer = JSONItem,
   collectionRenderer: CollectionRenderer = GridCollection,
-  resultsPerPage = 12,
 }) {
-  const [page, setPage] =  useStateWithUrlParam('page', '1', parseInt);
+  const [searchParams,] = useSearchParams();
+  const [page, setPage] = useStateWithUrlParam('page', '1', parseInt);
   const [filteredData, setFilteredData] = useState([]);
   const [selectedTab, setSelectedTab] = useStateWithUrlParam('tab', 'browse');
   const navigate = useNavigate();
 
-  const { filterData, isFinished, isLoading, error } =
+  const { filterData, isLoading, error } =
     useMephistoReview({
       hostname: getHostname(),
     });
-
-  // TODO: simplify how this is handled
-  useEffect(() => {
-    if ((filteredData?.length ?? 0) === 0) {
-      return;
-    }
-    const totalPages = Math.ceil(filteredData.length / resultsPerPage);
-    (page > totalPages) && setPage(Math.max(totalPages, 1));
-  }, [filteredData]);
 
   const gen_export_csv = (filteredData) => {
     return !!filteredData ? filteredData.map(o => { return { video_uid: o['video_uid'] } }) : []
@@ -63,7 +52,7 @@ function CollectionView({
   }
 
   const onImFeelingLuckyClick = () => {
-    navigate(`/${filteredData[Math.floor(Math.random() * filteredData.length)].video_uid}`)
+    navigate(`/${filteredData[Math.floor(Math.random() * filteredData.length)].video_uid}?${searchParams.toString()}`)
   }
 
   return (
@@ -101,7 +90,7 @@ function CollectionView({
       <main id="all-item-view-wrapper">
         <Tabs selectedTabId={selectedTab} onChange={setSelectedTab} animate={true} className={'main-tabs'} renderActiveTabPanelOnly={true}>
           <Tab id={'browse'} title={'Browse'} panel={
-            <Browse {...{ setSelectedTab, itemRenderer, CollectionRenderer, isLoading, isFinished, filteredData, page, resultsPerPage, setPage, error }} />
+            <Browse {...{ setSelectedTab, itemRenderer, CollectionRenderer, isLoading, filteredData, page, setPage, error }} />
           } />
 
           <Tab id={'analyze'} title={'Analyze'} panel={

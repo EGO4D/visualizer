@@ -29,7 +29,6 @@ function useMephistoReview({
     mode: data && data.mode,
     data: data && data.data,
     filterData: data && data.filter_data,
-    isFinished: data && data.finished,
     totalPages: (data && data.total_pages) || 1,
     error: error,
   };

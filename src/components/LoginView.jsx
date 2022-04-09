@@ -1,5 +1,3 @@
-// Copyright (c) Meta Platforms, Inc. and affiliates. All Rights Reserved.
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Card, Elevation, InputGroup, Intent } from "@blueprintjs/core";

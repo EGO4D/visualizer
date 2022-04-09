@@ -17,7 +17,6 @@ import VideoControls from "../../components/VideoControls";
 export default function VideoDetail({ id }) {
     const {
         data: item,
-        isFinished,
         isLoading,
         error,
     } = useMephistoReview({ taskId: id, hostname: getHostname() });
@@ -58,12 +57,12 @@ export default function VideoDetail({ id }) {
                         style={{ textDecoration: "none" }}
                         key={uid}>
                         <img
-                        className='videodetail-concurrent-video-thumbnail'
-                        role="presentation"
-                        src={
-                            getHostname() + `/assets/viz/${uid}_small.jpg`
-                        }
-                        alt="Thumbnail"
+                            className='videodetail-concurrent-video-thumbnail'
+                            role="presentation"
+                            src={
+                                getHostname() + `/assets/viz/${uid}_small.jpg`
+                            }
+                            alt="Thumbnail"
                         />
                     </Link>
                 </div>)}
@@ -91,7 +90,7 @@ export default function VideoDetail({ id }) {
         </>
     }, [selectedTab, data])
 
-    useBBoxes({annotations: data?.annotations[selectedTab], videoRef, canvasRef, dimensions, selectedTab});
+    useBBoxes({ annotations: data?.annotations[selectedTab], videoRef, canvasRef, dimensions, selectedTab });
 
     // const videoModules = null;
     const videoModules = data?.annotations[selectedTab] && <VideoModules data={data} annotations={data?.annotations[selectedTab]} progress={progress} videoRef={videoRef} setPlaying={setPlaying} duration={duration} />;
@@ -133,7 +132,7 @@ export default function VideoDetail({ id }) {
 
                     <VideoControls videoRef={videoRef} progress={progress} />
 
-                    { videoModules }
+                    {videoModules}
                 </div>
                 <div className="segment-viewer">
                     {concurrent_videos}
@@ -147,13 +146,6 @@ export default function VideoDetail({ id }) {
         <div className="item-dynamic">
             <ErrorPane error={error} />
             <h1 className="item-view-message">Loading...</h1>
-        </div>
-    ) : isFinished ? (
-        <div className="item-dynamic">
-            <ErrorPane error={error} />
-            <h1 className="item-view-message">
-                Done reviewing! You can close this app now
-            </h1>
         </div>
     ) : !!data ? (
         <>

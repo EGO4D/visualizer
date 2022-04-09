@@ -1,5 +1,3 @@
-// Copyright (c) Meta Platforms, Inc. and affiliates. All Rights Reserved.
-
 import React, { useMemo } from "react";
 import SpeedTree from "./Utility/SpeedTree";
 

@@ -1,11 +1,9 @@
-// Copyright (c) Meta Platforms, Inc. and affiliates. All Rights Reserved.
-
 import React from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { JSONItem } from "../JSONItem";
 import "./GridCollection.css";
 
-function GridCollection({ items, itemRenderer: ItemRenderer = JSONItem, setDetailIDs, detailIDs, setSelectedTab }) {
+function GridCollection({ items, itemRenderer: ItemRenderer = JSONItem, setDetailIDs, detailIDs, setSelectedTab, mode }) {
   const [searchParams,] = useSearchParams();
 
   return items && items.length > 0 ? (
@@ -31,7 +29,7 @@ function GridCollection({ items, itemRenderer: ItemRenderer = JSONItem, setDetai
             //   }
             // }
           >
-            <ItemRenderer item={item} setDetailIDs={setDetailIDs} />
+            <ItemRenderer item={item} setDetailIDs={setDetailIDs} mode={mode} />
           </Link>
         );
       })}

@@ -1,5 +1,3 @@
-// Copyright (c) Meta Platforms, Inc. and affiliates. All Rights Reserved.
-
 import React, { useRef, useEffect, useState } from "react";
 import { H6, Card, Elevation } from "@blueprintjs/core";
 import WordCloud from "./WordCloud";

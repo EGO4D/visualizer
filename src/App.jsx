@@ -30,8 +30,6 @@ export default function App() {
                     collectionRenderer={GridCollection}
                     // itemRenderer={JSONItem}
                     itemRenderer={NarrationsThumbnail}
-                    pagination={true}
-                    resultsPerPage={12}
                 />} />
             </Routes>
         </QueryClientProvider>

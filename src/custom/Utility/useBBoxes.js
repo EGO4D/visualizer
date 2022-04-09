@@ -178,13 +178,13 @@ export default function useBBoxes({ annotations, videoRef, canvasRef, dimensions
             steps.forEach((step) => step(ctx, now, metadata));
 
             const video = videoRef.current.getInternalPlayer()
-            !!video && video.requestVideoFrameCallback(callback);
+            !!video?.requestVideoFrameCallback && video.requestVideoFrameCallback(callback);
         },
         [canvasRef, videoRef, steps]
     );
 
     useEffect(() => {
         const video = !!videoRef.current && videoRef.current.getInternalPlayer();
-        !!video && video.requestVideoFrameCallback(callback);
+        !!video?.requestVideoFrameCallback && video.requestVideoFrameCallback(callback);
     }, [videoRef, callback]);
 }

@@ -1,5 +1,3 @@
-// Copyright (c) Meta Platforms, Inc. and affiliates. All Rights Reserved.
-
 import React from "react";
 import { useMephistoReview } from "../shims/mephisto-review-hook";
 import { useParams, Link, useSearchParams } from "react-router-dom";
@@ -29,7 +27,6 @@ function ItemView({
   const [searchParams,] = useSearchParams();
   const {
     data: item,
-    isFinished,
     isLoading,
     error,
     mode,
@@ -64,13 +61,6 @@ function ItemView({
           <div className="item-dynamic">
             <ErrorPane error={error} />
             <h1 className="item-view-message"><Spinner /> Loading...</h1>
-          </div>
-        ) : isFinished ? (
-          <div className="item-dynamic">
-            <ErrorPane error={error} />
-            <h1 className="item-view-message">
-              Done reviewing! You can close this app now
-            </h1>
           </div>
         ) : item ? (
           wrapClass ? (
