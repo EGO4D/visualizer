@@ -93,7 +93,7 @@ export default function VideoDetail({ id }) {
     useBBoxes({ annotations: data?.annotations[selectedTab], videoRef, canvasRef, dimensions, selectedTab });
 
     // const videoModules = null;
-    const videoModules = data?.annotations[selectedTab] && <VideoModules data={data} annotations={data?.annotations[selectedTab]} progress={progress} videoRef={videoRef} setPlaying={setPlaying} duration={duration} />;
+    const videoModules = data?.annotations[selectedTab] && <VideoModules data={data} annotations={data?.annotations[selectedTab]} progress={progress} videoRef={videoRef} setPlaying={setPlaying} duration={duration || data._duration} />;
 
     const renderedItem = data && (
         <>
