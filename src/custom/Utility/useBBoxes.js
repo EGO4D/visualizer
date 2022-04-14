@@ -72,6 +72,16 @@ const bbox_generators = [
             return Object.values(res_obj);
         }
     },
+    {
+        'tabs': ['fho_sta'],
+        'data_selector': (v, path) => v._type === 'sta_frame' && v['objects'].length > 0,
+        'data_mapper': ({ root, path }) => {
+            const frame = root['video_frame']['frame_number'];
+            return root['objects'].map(({ noun, verb, bounding_box: { x, y, width, height } }) => {
+                return { label: noun, kf: keyframes([{ time: frame, value: [x, y, width, height] }]), interpolate: false, min: frame, max: frame }
+            });
+        }
+    },
 ]
 
 export default function useBBoxes({ annotations, videoRef, canvasRef, dimensions, selectedTab }) {

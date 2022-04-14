@@ -7,7 +7,7 @@ export default function LabeledFrame({ data, path, key, videoRef, setPlaying, vi
     const onClick = (e) => {
         e.stopPropagation();
         videoRef?.current &&
-            videoRef.current.seekTo(data['video_frame']['frame_number']/30 + ( videoOffset ?? 1/120), "seconds");
+            videoRef.current.seekTo(data['video_frame']['frame_number'] / 30 + (1 / 60), "seconds");
         // !!setPlaying && setPlaying(true);
     }
 
@@ -17,7 +17,7 @@ export default function LabeledFrame({ data, path, key, videoRef, setPlaying, vi
         onKeyDown={(e) => e.key === 'Enter' && onClick(e)}
         role='button'
         tabIndex={-1}
-        style={{width:'100%', padding: '7px 0'}}>
+        style={{ width: '100%', padding: '7px 0' }}>
         {data['label']}
     </span >
 }

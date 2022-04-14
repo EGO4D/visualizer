@@ -8,7 +8,7 @@ export default function ResponseTrack({ data, path, key, videoRef, setPlaying, v
 
     const onClick = (e) => {
         e.stopPropagation();
-        first_frame && videoRef?.current && videoRef.current.seekTo(first_frame / 30.0 + videoOffset, "seconds");
+        first_frame && videoRef?.current && videoRef.current.seekTo(first_frame / 30.0 + (1 / 60), "seconds");
     }
 
     const arrayCount = <span className='tree-label-array-count'> {` [ ${Object.keys(data['frames']).length} ]`} </span>;

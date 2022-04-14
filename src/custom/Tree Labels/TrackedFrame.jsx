@@ -6,7 +6,7 @@ export default function TrackedFrame({ data, path, key, videoRef, setPlaying, vi
     const onClick = (e) => {
         e.stopPropagation();
         !!setPlaying && setPlaying(false);
-        videoRef?.current && videoRef.current.seekTo(data['video_frame']['frame_number'] / 30 + ( videoOffset ?? 1/120), "seconds");
+        videoRef?.current && videoRef.current.seekTo(data['video_frame']['frame_number'] / 30 + (1 / 60), "seconds");
     }
 
     return <span

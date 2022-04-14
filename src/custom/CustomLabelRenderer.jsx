@@ -11,6 +11,7 @@ import "./CustomLabelRenderer.scss"
 import ResponseTrack from "./Tree Labels/ResponseTrack";
 import VisualCrop from "./Tree Labels/VisualCrop";
 import TrackedFrame from "./Tree Labels/TrackedFrame";
+import FHOStaFrame from "./Tree Labels/FHOStaFrame";
 
 const RENDERERS = {
     'frame_number': FrameNumber,
@@ -18,6 +19,7 @@ const RENDERERS = {
     'nlq_query_set': NLQQuerySet,
     'object_state_change': ObjectStateChange,
     'response_track': ResponseTrack,
+    'sta_frame': FHOStaFrame,
     'templatized_query': TemplatizedQuery,
     'time_segment': TimeSegment,
     'tracked_frame': TrackedFrame,
