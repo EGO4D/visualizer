@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import ErrorPane from "../../components/ErrorPane"
-import { Pagination } from "../../components/pagination";
+import Pagination from "../../components/Pagination/Pagination";
 import { Button, Spinner } from "@blueprintjs/core";
 
 export default function Browse({ setSelectedTab, isLoading, filteredData, page, itemRenderer, CollectionRenderer, setPage, error }) {

@@ -3,7 +3,7 @@ import _ from "lodash";
 import { ResponsiveBar, ResponsiveBarCanvas } from '@nivo/bar'
 import { ResponsiveScatterPlot, ResponsiveScatterPlotCanvas } from '@nivo/scatterplot'
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { benchmark_values, scenario_values, device_values } from "../../components/filterbox/filterData";
+import { benchmark_values, scenario_values, device_values } from "../../components/FilterBox/filterData";
 import { getHostname } from "../../utils";
 
 import "./Analyze.scss"

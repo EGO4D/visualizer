@@ -7,7 +7,8 @@ import { Tab, Tabs } from "@blueprintjs/core";
 import ResponsiveCanvas from "../Utility/ResponsiveCanvas";
 import { getHostname } from "../../utils";
 import { useMephistoReview } from "../../shims/mephisto-review-hook";
-import ErrorPane from "../../components/ErrorPane"
+import { useUploadedDataStore } from "../../stores/UploadedDataStore";
+import ErrorPane from "../../components/ErrorPane";
 
 import "./VideoDetail.scss";
 import { Link } from "react-router-dom";
@@ -25,6 +26,7 @@ export default function VideoDetail({ id }) {
     const [duration, setDuration] = React.useState(0);
     const [playing, setPlaying] = useState(false);
     const [playerReady, setPlayerReady] = useState(false);
+    const uploadedData = useUploadedDataStore(state => state.uploadedData);
     const canvasRef = useRef();
     const videoRef = useRef();
 
@@ -86,14 +88,26 @@ export default function VideoDetail({ id }) {
                         } />
                     )
                 }
+                {
+                    Object.keys(uploadedData).filter(k => !!uploadedData[k][data._uid]).map(k =>
+                        <Tab id={k} title={k} panel={
+                            <div style={{ display: 'flex', height: '100%' }}>
+                                <JSONSpeedViewer data={uploadedData[k][data._uid]} customRenderer={CustomLabelRenderer} videoRef={videoRef} setPlaying={setPlaying} videoOffset={data['_video_offset']} expandThreshold={26} />
+                            </div>
+                        } />
+                    )
+                }
             </Tabs>
         </>
-    }, [selectedTab, data])
+    }, [selectedTab, data, uploadedData])
 
-    useBBoxes({ annotations: data?.annotations[selectedTab], videoRef, canvasRef, dimensions, selectedTab });
+    // TODO: simplify this logic
+    const annotations = data?.annotations[selectedTab] ?? (!!uploadedData[selectedTab] && uploadedData[selectedTab][data._uid]);
+
+    useBBoxes({ annotations: annotations, videoRef, canvasRef, dimensions, selectedTab });
 
     // const videoModules = null;
-    const videoModules = data?.annotations[selectedTab] && <VideoModules data={data} annotations={data?.annotations[selectedTab]} progress={progress} videoRef={videoRef} setPlaying={setPlaying} duration={duration || data._duration} />;
+    const videoModules = annotations && <VideoModules data={data} annotations={annotations} progress={progress} videoRef={videoRef} setPlaying={setPlaying} duration={duration || data._duration} />;
 
     const renderedItem = data && (
         <>

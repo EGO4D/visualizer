@@ -5,8 +5,8 @@
 // 3. Modules are rendered. Final Output is essentially [ <Module data_mapper(obj) /> for obj in json if data_selector(obj) ]
 
 import React, { useMemo } from 'react';
-import TimeSegmentsModule from './video_modules/TimeSegmentsModule';
 import { dfs_find } from '../custom/Utility/ObjectSearchUtils';
+import TimeSegmentsModule from './VideoModules/TimeSegmentsModule';
 
 // Type: [{ module: React.FC<{data: data_obj, ...}>, data_selector: Object -> [data_obj] }]
 const module_generators = [

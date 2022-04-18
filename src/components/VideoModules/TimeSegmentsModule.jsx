@@ -1,5 +1,5 @@
 import React from 'react';
-import TimeSegmentChart from "../../components/charts/TimeSegmentChart";
+import TimeSegmentChart from "../Charts/TimeSegmentChart";
 
 export default function TimeSegmentsModule({ data, annotations, progress, videoRef, setPlaying, duration }) {
     return <TimeSegmentChart

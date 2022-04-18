@@ -16,7 +16,7 @@ import { GridCollection, JSONItem } from "../renderers";
 import { getHostname } from "../utils";
 import { CSVLink } from "react-csv";
 
-import FilterBox from "./filterbox/FilterBox";
+import FilterBox from "./FilterBox/FilterBox";
 import Analyze from "../custom/Panels/Analyze";
 
 import Browse from "../custom/Panels/Browse";
@@ -24,6 +24,7 @@ import VersionHeader from "./VersionHeader";
 import useStateWithUrlParam from "../hooks/useStateWithUrlParam";
 // import VideoDetail from "../custom/Panels/VideoDetail";
 import "./CollectionView.scss"
+import FileUploadButton from "./PredictionsUpload/PredictionsUploadButton";
 
 
 function CollectionView({
@@ -74,6 +75,7 @@ function CollectionView({
             <CSVLink data={gen_export_csv(filteredData)} target="_blank" filename={'ego4d_viz_filtered_videos'} >
               <Button intent={Intent.PRIMARY} align={ALIGN_RIGHT} style={{ flex: '1 1 auto', margin: '7px' }}>Export Video UIDs</Button>
             </CSVLink>
+            <FileUploadButton />
           </NavbarGroup>
         </div>
         <div>

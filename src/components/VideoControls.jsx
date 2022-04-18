@@ -3,7 +3,6 @@ import { Button } from '@blueprintjs/core'
 import { nextFrame, prevFrame } from '../custom/CustomIcons'
 
 import "./VideoControls.scss"
-import ReportButton from './report_flow/ReportButton'
 
 
 export default function VideoControls({ videoRef, progress }){
