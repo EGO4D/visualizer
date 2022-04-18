@@ -75,7 +75,7 @@ function CollectionView({
             <CSVLink data={gen_export_csv(filteredData)} target="_blank" filename={'ego4d_viz_filtered_videos'} >
               <Button intent={Intent.PRIMARY} align={ALIGN_RIGHT} style={{ flex: '1 1 auto', margin: '7px' }}>Export Video UIDs</Button>
             </CSVLink>
-            <FileUploadButton />
+            {/* <FileUploadButton /> */}
           </NavbarGroup>
         </div>
         <div>

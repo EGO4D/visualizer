@@ -1,4 +1,16 @@
 .video-controls {
     padding: 5px 0 10px 0;
     display: flex;
+
+    &-target-frame {
+        max-width: 70px;
+    }
+
+    &-target-timestamp {
+        max-width: 90px;
+    }
+
+    & > * {
+        padding: 0 5px 0 5px;
+    }
 }
