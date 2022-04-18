@@ -9706,7 +9706,7 @@
   "version" "3.2.0"
 
 "react-filter-box@https://github.com/devanshk/react-filter-box":
-  "resolved" "git+ssh://git@github.com/devanshk/react-filter-box.git#af818adb5e95384936861c60fd9d32596c204614"
+  "resolved" "git+ssh://git@github.com/devanshk/react-filter-box.git#ccf09a29b4e2c92e8b0aedfa5d1ef029ee458852"
   "version" "3.4.2"
   dependencies:
     "codemirror" "^5.42.0"

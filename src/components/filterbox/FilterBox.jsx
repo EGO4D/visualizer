@@ -37,10 +37,10 @@ class CustomResultProcessing extends SimpleResultProcessing {
                 return row[field] !== value;
             case "contain":
             case "contains":
-                return !!row[field] && row[field].some((x) => !!x.match(new RegExp('\\b' + value + '\\b', 'i')));
+                return !!row[field] && row[field].some((x) => !!x && !!x.match(new RegExp('\\b' + value + '\\b', 'i')));
             case "!contain":
             case "!contains":
-                return !!row[field] && row[field].some((x) => !x.match(new RegExp('\\b' + value + '\\b', 'i')));
+                return !!row[field] && row[field].some((x) => !!x && !x.match(new RegExp('\\b' + value + '\\b', 'i')));
             case ">":
                 return row[field] > value;
             case ">=":
@@ -51,10 +51,10 @@ class CustomResultProcessing extends SimpleResultProcessing {
                 return row[field] <= value;
             case "include":
             case "includes":
-                return !!row[field] && row[field].some((x) => x.toLowerCase() === value.toLowerCase());
+                return !!row[field] && row[field].some((x) => !!x && x.toLowerCase() === value.toLowerCase());
             case "!include":
             case "!includes":
-                return !row[field] || !row[field].some((x) => x.toLowerCase() === value.toLowerCase());
+                return !row[field] || !row[field].some((x) => !!x && x.toLowerCase() === value.toLowerCase());
             default:
                 return false;
         }
