@@ -9,9 +9,12 @@ export default function VideoControls({ videoRef, progress }) {
     const [targetFrame, setTargetFrame] = useState('');
     const [targetTime, setTargetTime] = useState('');
 
+    // TODO: add better error handling
     const seekToFrame = (frame) => {
-        videoRef?.current && videoRef.current.seekTo(frame / 30.0 + 1 / 60.0, 'seconds');
-        setTargetFrame('');
+        try {
+            videoRef?.current && videoRef.current.seekTo(frame / 30.0 + 1 / 60.0, 'seconds');
+            setTargetFrame('');
+        } catch { }
     }
 
     const parseTimeStamp = (timestamp) => {
@@ -22,8 +25,10 @@ export default function VideoControls({ videoRef, progress }) {
     }
 
     const seekToTime = (time) => {
-        videoRef?.current && videoRef.current.seekTo(parseTimeStamp(time), 'seconds');
-        setTargetTime('');
+        try {
+            videoRef?.current && videoRef.current.seekTo(parseTimeStamp(time), 'seconds');
+            setTargetTime('');
+        } catch { }
     }
 
     return <div className="video-controls">
