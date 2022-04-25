@@ -144,7 +144,7 @@ export default function VideoDetail({ id }) {
                         <ResponsiveCanvas className={"video-canvas"} ref={canvasRef} reactPlayerRef={videoRef} scale={2} playerReady={playerReady} />
                     </div>
 
-                    <VideoControls videoRef={videoRef} progress={progress} />
+                    <VideoControls videoRef={videoRef} progress={progress} id={id} />
 
                     {videoModules}
                 </div>

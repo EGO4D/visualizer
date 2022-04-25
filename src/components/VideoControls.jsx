@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
 import { Button, ControlGroup, FormGroup, InputGroup, NumericInput } from '@blueprintjs/core'
 import { nextFrame, prevFrame } from '../custom/CustomIcons'
+import ReportButton from './ReportFlow/ReportButton'
 
 import "./VideoControls.scss"
 
 
-export default function VideoControls({ videoRef, progress }) {
+export default function VideoControls({ id, videoRef, progress }) {
     const [targetFrame, setTargetFrame] = useState('');
     const [targetTime, setTargetTime] = useState('');
 
@@ -55,6 +56,6 @@ export default function VideoControls({ videoRef, progress }) {
             />
             <Button icon='arrow-right' onClick={() => targetTime !== '' && seekToTime(targetTime)} />
         </ControlGroup>
-        {/* <ReportButton style ={{ marginLeft: 'auto' }}/> */}
+        <ReportButton id={id} style ={{ marginLeft: 'auto' }}/>
     </div>
 }

@@ -57,7 +57,7 @@ const bbox_generators = [
         }
     },
     {
-        'tabs': ['fho_hands', 'fho_scod'],
+        'tabs': ['fho_scod'],
         'data_selector': (v, path) => v._type === 'tracked_frame' && v['bounding_boxes'].length > 0,
         'data_mapper': ({ root, path }) => {
             const res_obj = {}; // label -> obj
@@ -82,13 +82,31 @@ const bbox_generators = [
             });
         }
     },
+];
+
+const point_generators = [
+    {
+        'tabs': ['fho_hands'],
+        'data_selector': (v, path) => v._type === 'tracked_frame' && v['points'].length > 0,
+        'data_mapper': ({ root, path }) => {
+            const res_obj = {}; // label -> obj
+            const frame = root['video_frame']['frame_number'];
+            root['points'].forEach(({ label, x, y }) => {
+                let obj = res_obj[label] ?? { label, kf: keyframes(), interpolate: false, min: frame, max: frame };
+                obj.kf.add({ time: frame, value: [x, y] });
+                obj.min = Math.min(obj.min, frame);
+                obj.max = Math.max(obj.max, frame);
+                res_obj[label] = obj;
+            });
+            return Object.values(res_obj);
+        }
+    }
 ]
 
 export default function useBBoxes({ annotations, videoRef, canvasRef, dimensions, selectedTab }) {
+    // TODO: abstract into a generic 'shape' renderer
     const bboxes = useMemo(
         () => {
-            let start = new Date();
-            // console.log("useBboxes start");
             const bboxes = [];
             const label_colors = { ...FIXED_COLORS };
             for (let bbox_gen of bbox_generators) {
@@ -108,8 +126,31 @@ export default function useBBoxes({ annotations, videoRef, canvasRef, dimensions
                     }
                 }
             }
-            // console.log("useBboxes took ", new Date() - start, " milliseconds");
             return bboxes;
+        }, [annotations, selectedTab]);
+
+    const points = useMemo(
+        () => {
+            const points = [];
+            const label_colors = { ...FIXED_COLORS };
+            for (let point_gen of point_generators) {
+                const { data_selector, data_mapper, tabs } = point_gen;
+                if (tabs && !tabs.includes(selectedTab)) {
+                    continue;
+                }
+                for (let obj of dfs_find(annotations, data_selector)) {
+                    const { root, path } = obj;
+                    const point_objs = data_mapper({ root, path });
+                    for (let point_obj of point_objs) {
+                        // add colors
+                        if (!label_colors[point_obj.label]) {
+                            label_colors[point_obj.label] = COLORS[Object.keys(label_colors).length % COLORS.length];
+                        }
+                        points.push({ color: label_colors[point_obj.label], ...point_obj })
+                    }
+                }
+            }
+            return points;
         }, [annotations, selectedTab]);
 
 
@@ -122,6 +163,7 @@ export default function useBBoxes({ annotations, videoRef, canvasRef, dimensions
     const step = useCallback(
         (ctx, now, metadata) => {
             const frame = Math.round(metadata.mediaTime * 30); // TODO: don't hardcode fps
+            // Generate Bboxes for frame
             const cur_bboxes = bboxes.map(({ label, color, kf, interpolate, min, max }) => {
                 if (frame < min || frame > max) { return null }
                 let kf_obj = interpolate ? kf.value(frame) : kf.get(frame)?.value;
@@ -129,8 +171,19 @@ export default function useBBoxes({ annotations, videoRef, canvasRef, dimensions
                 let [x, y, width, height] = kf_obj
                 return { label, color, x, y, width, height };
             }).filter(x => !!x);
+
+            // Generate Points for frame
+            const cur_points = points.map(({ label, color, kf, interpolate, min, max }) => {
+                if (frame < min || frame > max) { return null }
+                let kf_obj = interpolate ? kf.value(frame) : kf.get(frame)?.value;
+                if (!kf_obj) { return null }
+                let [x, y] = kf_obj
+                return { label, color, x, y };
+            }).filter(x => !!x);
+
             ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
 
+            // Draw Bboxes
             ctx.lineWidth = 5;
             cur_bboxes.forEach(bbox => {
                 const { x, y, width, height, label, color } = bbox;
@@ -154,8 +207,37 @@ export default function useBBoxes({ annotations, videoRef, canvasRef, dimensions
                 ctx.fillStyle = "#fff";
                 ctx.fillText(label, (x + 3) / dimensions[0] * canvasRef.current.width, (y - 6) / dimensions[1] * canvasRef.current.height);
             });
-            // ctx.strokeRect(20, 20, 150, 100);
 
+            // Draw Points
+            const radius = 7
+            cur_points.forEach(point => {
+                const { x, y, label, color } = point;
+                ctx.strokeStyle = color ?? '#000';
+                ctx.fillStyle = color ?? '#000';
+                // point
+                ctx.beginPath();
+                ctx.arc(
+                    x / dimensions[0] * canvasRef.current.width,
+                    y / dimensions[1] * canvasRef.current.height,
+                    radius, 0, 2 * Math.PI, false
+                );
+                // ctx.fill();
+                ctx.stroke();
+                console.log(x, y);
+
+                // label bg
+                ctx.fillRect(
+                    x / dimensions[0] * canvasRef.current.width - ctx.lineWidth / 2 - ctx.measureText(label).width / 2,
+                    y / dimensions[1] * canvasRef.current.height - 60,
+                    ctx.measureText(label).width + 10,
+                    40,
+                )
+                // label
+                ctx.fillStyle = "#fff";
+                ctx.fillText(label, (x + 3) / dimensions[0] * canvasRef.current.width - ctx.measureText(label).width / 2, (y - 6) / dimensions[1] * canvasRef.current.height - 20);
+            });
+
+            // Draw frame number
             ctx.font = "30px Arial";
             ctx.fillStyle = "#fff";
 
@@ -171,15 +253,7 @@ export default function useBBoxes({ annotations, videoRef, canvasRef, dimensions
 
     const steps = [step];
 
-    // TODO: remove temp bbox code for testing
-    // useEffect(() => {
-    //     const test_bboxes = {};
-    //     [...Array(1000).keys()].forEach(frame => {
-    //         test_bboxes[frame] = [{ label: 'test-bbox', x: frame, y: frame * 0.5, width: 1800 - frame, height: 100 }]
-    //     });
-    //     setBboxes(test_bboxes);
-    // }, [])
-
+    // Render shapes on every frame
     const callback = useCallback(
         (now, metadata) => {
             if (!canvasRef.current) return;
