@@ -3,7 +3,7 @@ import ReactPlayer from "react-player"; /* dependency */
 import JSONSpeedViewer from "../JSONSpeedViewer";
 import CustomLabelRenderer from "../CustomLabelRenderer";
 import VideoModules from "../../components/VideoModules";
-import { Tab, Tabs } from "@blueprintjs/core";
+import { ProgressBar, Tab, Tabs } from "@blueprintjs/core";
 import ResponsiveCanvas from "../Utility/ResponsiveCanvas";
 import { getHostname } from "../../utils";
 import { useMephistoReview } from "../../shims/mephisto-review-hook";
@@ -26,6 +26,7 @@ export default function VideoDetail({ id }) {
     const [duration, setDuration] = React.useState(0);
     const [playing, setPlaying] = useState(false);
     const [playerReady, setPlayerReady] = useState(false);
+    const [buffering, setBuffering] = useState(false);
     const uploadedData = useUploadedDataStore(state => state.uploadedData);
     const canvasRef = useRef();
     const videoRef = useRef();
@@ -120,7 +121,7 @@ export default function VideoDetail({ id }) {
                     ) : null} */}
                     <div className="video-stage">
                         <ReactPlayer
-                            className={"video-player"}
+                            className="video-player"
                             url={file}
                             controls
                             playing={playing}
@@ -139,6 +140,8 @@ export default function VideoDetail({ id }) {
                             }}
                             onPlay={() => setPlaying(true)}
                             onPause={() => setPlaying(false)}
+                            onBuffer={() => setBuffering(true)}
+                            onBufferEnd={() => setBuffering(false)}
                         />
 
                         <ResponsiveCanvas className={"video-canvas"} ref={canvasRef} reactPlayerRef={videoRef} scale={2} playerReady={playerReady} />
