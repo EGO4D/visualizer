@@ -62,7 +62,7 @@ class CustomResultProcessing extends SimpleResultProcessing {
 }
 
 export default function FilterBox({ filterData, setFilteredData }) {
-    const [query, setQueryAndURL, setQuery, setQueryURL] = useStateWithUrlParam('query', '');
+    const [query, setQueryAndURL, setQuery, setQueryURL] = useStateWithUrlParam('q', '');
 
     const autoCompleteHandler = new CustomAutoComplete([], filter_options);
     const parser = new FilterQueryParser();

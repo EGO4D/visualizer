@@ -32,9 +32,9 @@ function CollectionView({
   collectionRenderer: CollectionRenderer = GridCollection,
 }) {
   const [searchParams,] = useSearchParams();
-  const [page, setPage] = useStateWithUrlParam('page', '1', parseInt);
+  const [page, setPage] = useStateWithUrlParam('p', '1', parseInt);
   const [filteredData, setFilteredData] = useState([]);
-  const [selectedTab, setSelectedTab] = useStateWithUrlParam('tab', 'browse');
+  const [selectedTab, setSelectedTab] = useStateWithUrlParam('t', 'browse');
   const navigate = useNavigate();
 
   const { filterData, isLoading, error } =
