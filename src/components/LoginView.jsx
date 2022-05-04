@@ -32,7 +32,7 @@ function LoginView() {
 
   return <div className='login-main'>
     <Card className="login-dialog" interactive={false} elevation={Elevation.THREE}>
-        <h1>Ego4D Dataset</h1>
+        <h1>Ego4D Explorer</h1>
         <InputGroup
             value={login_key}
             onChange={event => setLoginKey(event.target.value)}

@@ -66,7 +66,7 @@ function CollectionView({
             <Link to={'/'} style={{ textDecoration: "none", color: "black" }}>
               <NavbarHeading>
                 <b>
-                  <pre>EGO4D Dataset</pre>
+                  <pre>EGO4D Explorer</pre>
                 </b>
               </NavbarHeading>
             </Link>

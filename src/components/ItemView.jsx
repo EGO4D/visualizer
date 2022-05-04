@@ -41,7 +41,7 @@ function ItemView({
               <>
                 <Link to={`/?${searchParams.toString()}`} style={{ textDecoration: "none" }}>
                   <Button intent="primary" icon="caret-left" id="home-button">
-                    <b>Ego4D Dataset</b>
+                    <b>Ego4D Explorer</b>
                   </Button>
                 </Link>
                 <NavbarDivider />
