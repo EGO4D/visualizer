@@ -25,6 +25,7 @@ import useStateWithUrlParam from "../hooks/useStateWithUrlParam";
 // import VideoDetail from "../custom/Panels/VideoDetail";
 import "./CollectionView.scss"
 import FileUploadButton from "./PredictionsUpload/PredictionsUploadButton";
+import Footer from "../Footer";
 
 
 function CollectionView({
@@ -100,6 +101,8 @@ function CollectionView({
           } />
         </Tabs>
       </main>
+
+      <Footer />
     </>
   );
 }

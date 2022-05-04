@@ -6,6 +6,7 @@ import { getHostname } from "../utils";
 import { getAllObjectValWordCounts } from "../renderers/WordCloudItem/WordCloud";
 
 import "./NarrationsThumbnail.scss";
+import { formatVideoSeconds } from "./Utility/Formatters";
 
 function NarrationsThumbnail({ item, setDetailIDs, mode }) {
   const [isError, setError] = React.useState(false);
@@ -25,8 +26,11 @@ function NarrationsThumbnail({ item, setDetailIDs, mode }) {
             : "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="
         }
         alt="Thumbnail"
-        style={{ width: item._img ? "100%" : "1px", height: "25vh", 'objectFit': 'cover' }}
+        style={{ width: item._img ? "100%" : "1px", height: "100%", objectFit: 'cover' }}
       />
+      {/* <span className='mini-info'>
+        { formatVideoSeconds(item.duration) }
+      </span> */}
     </div>
   }
   return (

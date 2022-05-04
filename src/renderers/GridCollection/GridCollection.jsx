@@ -1,13 +1,13 @@
 import React from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { JSONItem } from "../JSONItem";
-import "./GridCollection.css";
+import "./GridCollection.scss";
 
 function GridCollection({ items, itemRenderer: ItemRenderer = JSONItem, setDetailIDs, detailIDs, setSelectedTab, mode }) {
   const [searchParams,] = useSearchParams();
 
   return items && items.length > 0 ? (
-    <div className="default-collection-renderer-container">
+    <div className={`default-collection-renderer-container mode-${mode}`}>
       {items.map((item) => {
         return (
           <Link

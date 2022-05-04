@@ -81,7 +81,7 @@ export default function FilterBox({ filterData, setFilteredData }) {
     }, [filterData]); // Run pre-loaded url query when the page first loads
 
     return <>
-        <Icon icon={'search'} className='filterbox-search-icon' />
+        <Icon icon={'filter'} className='filterbox-search-icon' />
         <ReactFilterBox
             data={[]}
             options={filter_options}

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Button, Dialog, PanelStack2, CLAS, Classes } from '@blueprintjs/core'
+import { Button, Dialog, Classes } from '@blueprintjs/core'
 
 import "./ReportButton.scss"
 import ReportFlow from './ReportFlow';

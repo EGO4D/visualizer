@@ -80,3 +80,32 @@
     background-color:#3c4177;
     color: white;
 }
+
+
+.mini-thumbnail {
+    height: 25vh;
+    position: relative;
+    transition: ease transform, box-shadow 0.1s;
+    border-radius: 3px;
+    overflow: hidden;
+
+    .mini-info {
+        color: white;
+        position:absolute;
+        bottom:0;
+        right: 0;
+        z-index: 1;
+        transition: ease all 0.5;
+        bottom: -500;
+    }
+
+    &:hover {
+        box-shadow: 0 0 0 1px rgb(16 22 26 / 10%), 0 2px 4px rgb(16 22 26 / 20%), 0 8px 24px rgb(16 22 26 / 20%);
+        cursor: pointer;
+        transform: translateY(-5px);
+
+        .mini-tags {
+            transform: translateY(0);
+        }
+    }
+}

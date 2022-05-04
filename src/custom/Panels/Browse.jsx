@@ -2,10 +2,14 @@ import React, { useState, useEffect } from "react";
 import ErrorPane from "../../components/ErrorPane"
 import Pagination from "../../components/Pagination/Pagination";
 import { Button, Spinner } from "@blueprintjs/core";
+import { Select } from "@blueprintjs/select";
+import useStateWithUrlParam from "../../hooks/useStateWithUrlParam"
+
+import "./Browse.scss"
 
 export default function Browse({ setSelectedTab, isLoading, filteredData, page, itemRenderer, CollectionRenderer, setPage, error }) {
-    const [mode, setMode] = useState('full');
-    const resultsPerPage = mode === 'full' ? 12 : 36
+    const [mode, setMode] = useStateWithUrlParam('m', 'mini');
+    const [resultsPerPage, setResultsPerPage] = useState(24);
 
     // TODO: simplify how this is handled
     useEffect(() => {
@@ -14,7 +18,7 @@ export default function Browse({ setSelectedTab, isLoading, filteredData, page, 
         }
         const totalPages = Math.ceil(filteredData.length / resultsPerPage);
         (page > totalPages) && setPage(Math.max(totalPages, 1));
-    }, [filteredData]);
+    }, [filteredData, resultsPerPage]);
 
     const totalPages = Math.ceil((filteredData?.length ?? 0) / resultsPerPage);
 
@@ -25,10 +29,30 @@ export default function Browse({ setSelectedTab, isLoading, filteredData, page, 
                 <h1 className="all-item-view-message"> <Spinner />Loading...</h1>
             ) : filteredData && filteredData.length > 0 ? (
                 <>
-                    {/* <div className="browse-mode-switcher">
-                        <Button icon='square' onClick={() => setMode('full')} />
-                        <Button icon='grid-view' onClick={() => setMode('mini')} />
-                    </div> */}
+                    <div className="browse-controls">
+                        <Select
+                            className='pagenum-selector'
+                            filterable={false}
+                            popoverProps={{ minimal: true }}
+                            items={[12, 24, 48, 96]}
+                            activeItem={resultsPerPage}
+                            itemRenderer={(x, { handleClick, modifiers, index }) =>
+                                <div
+                                    className={'pagenum-option' + (modifiers.active ? ' active' : '')}
+                                    onClick={handleClick}
+                                    onKeyDown={(e) => e.key === 'Enter' && handleClick.bind(this)}
+                                    role='button'
+                                    tabIndex={index}>
+                                    {x}
+                                </div>}
+                            onItemSelect={(i) => setResultsPerPage(i)}>
+                            <Button text={resultsPerPage} rightIcon="caret-down" />
+                        </Select>
+                        <div className="mode-switcher">
+                            <Button icon='grid-view' onClick={() => setMode('mini')} intent={ mode == 'mini' ? 'primary' : 'none'} />
+                            <Button icon='square' onClick={() => setMode('full')} intent={ mode == 'full' ? 'primary' : 'none'} />
+                        </div>
+                    </div>
                     <CollectionRenderer items={filteredData.slice((page - 1) * resultsPerPage, page * resultsPerPage)} {...{ itemRenderer, setSelectedTab, mode }} />
                     {totalPages > 1 ? (
                         <Pagination
