@@ -9,7 +9,7 @@ import "./Browse.scss"
 
 export default function Browse({ setSelectedTab, isLoading, filteredData, page, itemRenderer, CollectionRenderer, setPage, error }) {
     const [mode, setMode] = useStateWithUrlParam('m', 'mini');
-    const [resultsPerPage, setResultsPerPage] = useState(24);
+    const [resultsPerPage, setResultsPerPage] = useStateWithUrlParam('rpp', '24', parseInt);
 
     // TODO: simplify how this is handled
     useEffect(() => {
