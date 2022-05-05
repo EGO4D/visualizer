@@ -12,13 +12,20 @@
 
   &.mode-mini {
     grid-template-columns: 25% 25% 25% 25%;
-    width: 75vw;
+    width: 80vw;
   }
 }
 
+// TODO: come up with a formula and replace these with scss-generated breakpoints
 @media only screen and (min-width: 1400px) {
   .default-collection-renderer-container {
-    grid-template-columns: 33.33% 33.33% 33.33%;
+    grid-template-columns: 33% 33% 33%;
+  }
+}
+
+@media only screen and (max-width: 1200px) {
+  .default-collection-renderer-container.mode-full {
+    grid-template-columns: 50% 50%;
   }
 }
 

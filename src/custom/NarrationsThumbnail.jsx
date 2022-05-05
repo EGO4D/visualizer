@@ -1,14 +1,15 @@
 /* eslint-disable no-unused-expressions */
 
 import React from "react";
-import { Card, Elevation } from "@blueprintjs/core";
+import { Card, Elevation, HTMLTable } from "@blueprintjs/core";
 import { getHostname } from "../utils";
-import { getAllObjectValWordCounts } from "../renderers/WordCloudItem/WordCloud";
 
 import "./NarrationsThumbnail.scss";
 import { formatVideoSeconds } from "./Utility/Formatters";
 
-function NarrationsThumbnail({ item, setDetailIDs, mode }) {
+const CUSTOM_FIELDS = ['video_uid', 'benchmarks']
+
+function NarrationsThumbnail({ item, setDetailIDs, mode, selectedFields }) {
   const [isError, setError] = React.useState(false);
 
   if (mode === 'mini') {
@@ -41,13 +42,12 @@ function NarrationsThumbnail({ item, setDetailIDs, mode }) {
         className="json-item-card"
       >
         <p style={{ fontSize: 12 }}>
-          {item.video_uid}
+          {selectedFields.includes('video_uid') && item.video_uid}
         </p>
         <img
           role="presentation"
           onError={(e) => {
             e.target.onerror = null;
-            // e.target.src = "image_path_here";
             setError(true);
           }}
           src={
@@ -59,33 +59,36 @@ function NarrationsThumbnail({ item, setDetailIDs, mode }) {
           style={{ width: item._img ? "100%" : "1px", height: "25vh", 'objectFit': 'cover' }}
         />
         <span>
-          <br />
-          {
-            getBenchmarks(item).map(({ tag, subtag }) => (
-              subtag !== '' ?
-                <div className={"thumbnail-tag-with-subtag"} key={tag + subtag}>
-                  <span className={"pillbox-left tag-" + tag}> {tag} </span>
-                  <span className={"pillbox-right subtag-" + tag}> {subtag} </span>
-                </div> :
-                <span
-                  className={"thumbnail-tag tag-" + tag}
-                  key={tag}>
-                  {tag}
-                </span>
-            ))
+          {selectedFields.includes('benchmarks') &&
+            <>
+              <br />
+              {
+                getBenchmarks(item).map(({ tag, subtag }) => (
+                  subtag !== '' ?
+                    <div className={"thumbnail-tag-with-subtag"} key={tag + subtag}>
+                      <span className={"pillbox-left tag-" + tag}> {tag} </span>
+                      <span className={"pillbox-right subtag-" + tag}> {subtag} </span>
+                    </div> :
+                    <span
+                      className={"thumbnail-tag tag-" + tag}
+                      key={tag}>
+                      {tag}
+                    </span>
+                ))
+              }
+            </>
           }
-          <br />
-          {
-            getTags(item).map((tag) => (
-              <span
-                className={"thumbnail-tag tag-" + tag}
-                key={tag}>
-                {tag}
-              </span>
-            ))
-          }
-          <br />
-          {item.summaries}
+          <HTMLTable condensed={true} bordered={true} className='thumbnail-detail'>
+            <tbody>
+              {selectedFields.filter(x => !CUSTOM_FIELDS.includes(x)).map(f =>
+                <tr>
+                  <th className='thumbnail-detail-label'>{f}:</th>
+                  {/* <th>{item[f] && item[f].constructor.name}</th> */}
+                  <td className='thumbnail-detail-info'>{item[f] && item[f].constructor == Array ? item[f].map(x => <>{String(x)}<div className='separator'/></>) : item[f]}</td>
+                </tr>
+              )}
+            </tbody>
+          </HTMLTable>
         </span>
       </Card>
     </div>

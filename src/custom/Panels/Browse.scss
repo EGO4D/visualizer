@@ -1,7 +1,15 @@
+.browse-controls-container {
+    width: calc(100% - 11.4vw);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .browse-controls {
     display: flex;
-    margin-left: auto;
-    margin-right: 12.5vw;
+    margin: 0 5px;
+    align-items: center;
 
     .mode-switcher {
         > * {
@@ -16,4 +24,19 @@
     &:hover, &.active {
         background: rgb(233, 233, 233);
     }
+}
+
+.bp3-menu-item.bp3-selected, .bp3-menu-item.bp3-selected:active, .bp3-menu-item.bp3-selected:hover {
+    background-color: rgba(45,114,210,.1);
+    color: #215db0;
+}
+
+.fields-selector input {
+    min-width: 200px;
+}
+
+.bp3-multi-select-popover .bp3-menu {
+    max-height: 145px;
+    max-width: 400px;
+    overflow: auto;
 }

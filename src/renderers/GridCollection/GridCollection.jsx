@@ -3,7 +3,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { JSONItem } from "../JSONItem";
 import "./GridCollection.scss";
 
-function GridCollection({ items, itemRenderer: ItemRenderer = JSONItem, setDetailIDs, detailIDs, setSelectedTab, mode }) {
+function GridCollection({ items, itemRenderer: ItemRenderer = JSONItem, setDetailIDs, detailIDs, setSelectedTab, mode, selectedFields }) {
   const [searchParams,] = useSearchParams();
 
   return items && items.length > 0 ? (
@@ -29,7 +29,7 @@ function GridCollection({ items, itemRenderer: ItemRenderer = JSONItem, setDetai
             //   }
             // }
           >
-            <ItemRenderer item={item} setDetailIDs={setDetailIDs} mode={mode} />
+            <ItemRenderer item={item} setDetailIDs={setDetailIDs} mode={mode} selectedFields={selectedFields} />
           </Link>
         );
       })}

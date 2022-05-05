@@ -61,8 +61,7 @@ class CustomResultProcessing extends SimpleResultProcessing {
     }
 }
 
-export default function FilterBox({ filterData, setFilteredData }) {
-    const [query, setQueryAndURL, setQuery, setQueryURL] = useStateWithUrlParam('q', '');
+export default function FilterBox({ filterData, setFilteredData, query, setQuery, setQueryURL }) {
 
     const autoCompleteHandler = new CustomAutoComplete([], filter_options);
     const parser = new FilterQueryParser();
@@ -77,10 +76,10 @@ export default function FilterBox({ filterData, setFilteredData }) {
     useEffect(() => {
         var result = parser.parse(query);
         if (result.isError) { return }
-        onParseOk(result);
-    }, [filterData]); // Run pre-loaded url query when the page first loads
+        new CustomResultProcessing(filter_options).process(filterData, result).length > 0 && onParseOk(result);
+    }, [filterData, query]); // Run pre-loaded url query when the page first loads
 
-    return <div style={{ display: 'flex', width: '100%' }}>
+    return <div style={{ display: 'flex', flexBasis: '100%', maxWidth: '100%'}}>
         <Icon icon={'filter'} className='filterbox-icon' />
         <ReactFilterBox
             data={[]}

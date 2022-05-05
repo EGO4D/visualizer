@@ -9,6 +9,7 @@
     margin: 4px 2px;
     cursor: pointer;
     border-radius: 16px;
+    font-size:1rem;
 }
 
 .thumbnail-tag-with-subtag {
@@ -89,16 +90,6 @@
     border-radius: 3px;
     overflow: hidden;
 
-    // .mini-info {
-    //     color: white;
-    //     position:absolute;
-    //     bottom:0;
-    //     right: 0;
-    //     z-index: 1;
-    //     transition: ease all 0.5;
-    //     bottom: -500;
-    // }
-
     &:hover {
         box-shadow: 0 0 0 1px rgb(16 22 26 / 10%), 0 2px 4px rgb(16 22 26 / 20%), 0 8px 24px rgb(16 22 26 / 20%);
         cursor: pointer;
@@ -106,6 +97,23 @@
 
         .mini-tags {
             transform: translateY(0);
+        }
+    }
+}
+
+.thumbnail-detail {
+    width: 100%;
+    table-layout: fixed;
+    margin-top:6px;
+
+    .thumbnail-detail-info {
+        word-wrap: break-word;
+
+        .separator {
+            height: 1px;
+            width: 100%;
+            margin: 2px 0;
+            background: rgba(0,0,0,.04);
         }
     }
 }

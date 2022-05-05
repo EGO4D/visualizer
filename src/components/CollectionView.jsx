@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate, Link, useSearchParams } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { useMephistoReview } from "../shims/mephisto-review-hook";
 import {
   Button,
@@ -27,14 +27,15 @@ import "./CollectionView.scss"
 import FileUploadButton from "./PredictionsUpload/PredictionsUploadButton";
 import Footer from "../Footer";
 import SearchBox from "./SearchBox/SearchBox";
+import { benchmark_values } from "./FilterBox/filterData";
 
 
 function CollectionView({
   itemRenderer = JSONItem,
   collectionRenderer: CollectionRenderer = GridCollection,
 }) {
-  const [searchParams,] = useSearchParams();
-  const [page, setPage] = useStateWithUrlParam('p', '1', parseInt);
+  const [query, setQueryAndURL, setQuery, setQueryURL] = useStateWithUrlParam('q', '');
+  const [page, setPage] = useStateWithUrlParam('p', 1);
   const [filteredData, setFilteredData] = useState([]);
   const [selectedTab, setSelectedTab] = useStateWithUrlParam('t', 'browse');
   const navigate = useNavigate();
@@ -54,10 +55,6 @@ function CollectionView({
     'analyze': 'Analyzing',
   }
 
-  const onImFeelingLuckyClick = () => {
-    navigate(`/${filteredData[Math.floor(Math.random() * filteredData.length)].video_uid}?${searchParams.toString()}`)
-  }
-
   return (
     <>
       <VersionHeader />
@@ -74,10 +71,10 @@ function CollectionView({
           </NavbarGroup>
           <NavbarGroup align={Alignment.CENTER}>
             {/* <SearchBox /> */}
-            <FilterBox filterData={filterData} setFilteredData={setFilteredData} />
-            <CSVLink data={gen_export_csv(filteredData)} target="_blank" filename={'ego4d_viz_filtered_videos'} >
+            <FilterBox filterData={filterData} setFilteredData={setFilteredData} {...{ query, setQueryAndURL, setQuery, setQueryURL }} />
+            {/* <CSVLink data={gen_export_csv(filteredData)} target="_blank" filename={'ego4d_viz_filtered_videos'} >
               <Button align={ALIGN_RIGHT} style={{ flex: '1 1 auto', margin: '7px' }}>Export Video UIDs</Button>
-            </CSVLink>
+            </CSVLink> */}
             {/* <FileUploadButton /> */}
           </NavbarGroup>
         </div>
@@ -89,7 +86,25 @@ function CollectionView({
                 total_duration_seconds + ' seconds'
           }</span>.
 
-          {/* <Button intent={Intent.PRIMARY} align={ALIGN_RIGHT} style={{ flex: '1 1 auto', margin: '7px' }} onClick={onImFeelingLuckyClick}>Random Video</Button> */}
+          {false &&
+            benchmark_values.map((benchmark) => {
+              let snippet = `benchmarks include ${benchmark}`;
+              return <span
+                className={'nav-benchmark-opt' + (query.includes(snippet) ? ` tag-${benchmark} active` : '')}
+                onClick={() => {
+                  let new_query = query.includes(snippet)
+                    ? query.replace(new RegExp(`(( AND| OR)\\s*${snippet}|${snippet}\\s*(AND |OR )|\\s*${snippet}\\s*)`), '')
+                    : query.trim().length > 0
+                      ? `${query} ${query.includes('benchmarks include') ? 'OR' : 'AND'} ${snippet}`
+                      : snippet;
+
+                  setQueryAndURL(new_query.replace(new RegExp('\\s+', 'g'), ' '));
+                }}
+                onKeyDown={(e) => e.preventDefault()}
+                role='button'
+                tabIndex={-1}>{benchmark}</span>
+            })
+          }
         </div>
       </Navbar>
       <main id="all-item-view-wrapper">
