@@ -21,3 +21,20 @@
     grid-template-columns: 33.33% 33.33% 33.33%;
   }
 }
+
+@media only screen and (max-width: 768px) {
+  .default-collection-renderer-container.mode-mini {
+      grid-template-columns: 33% 33% 33%;
+  }
+
+  .default-collection-renderer-container.mode-full {
+    grid-template-columns: 50% 50%;
+  }
+}
+
+@media only screen and (max-width: 570px) {
+  .default-collection-renderer-container.mode-mini,
+  .default-collection-renderer-container.mode-full {
+    grid-template-columns: 100%;
+  }
+}

@@ -1,0 +1,20 @@
+.searchbox input {
+    height: 38px;
+    padding: 0 10px 0 50px;
+    padding-left: 50px !important;
+    align-items: center;
+    border-left: none;
+    border-radius: 3px;
+}
+
+.bp3-navbar .searchbox-icon {
+    height: 38px;
+    padding: 0 10px 0 10px;
+    color: gray;
+    border-radius: 3px 0 0 3px;
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    display: flex;
+    align-items: center;
+    margin: 0 !important;
+}

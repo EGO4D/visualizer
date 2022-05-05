@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import ErrorPane from "../../components/ErrorPane"
 import Pagination from "../../components/Pagination/Pagination";
-import { Button, Spinner } from "@blueprintjs/core";
+import { Button, Intent, Spinner } from "@blueprintjs/core";
 import { Select } from "@blueprintjs/select";
 import useStateWithUrlParam from "../../hooks/useStateWithUrlParam"
 
 import "./Browse.scss"
 
 export default function Browse({ setSelectedTab, isLoading, filteredData, page, itemRenderer, CollectionRenderer, setPage, error }) {
-    const [mode, setMode] = useStateWithUrlParam('m', 'mini');
+    const [mode, setMode] = useStateWithUrlParam('m', 'full');
     const [resultsPerPage, setResultsPerPage] = useStateWithUrlParam('rpp', '24', parseInt);
 
     // TODO: simplify how this is handled
@@ -46,11 +46,12 @@ export default function Browse({ setSelectedTab, isLoading, filteredData, page, 
                                     {x}
                                 </div>}
                             onItemSelect={(i) => setResultsPerPage(i)}>
-                            <Button text={resultsPerPage} rightIcon="caret-down" />
+                            <Button text={`Items: ${resultsPerPage}`} rightIcon="caret-down" />
                         </Select>
                         <div className="mode-switcher">
-                            <Button icon='grid-view' onClick={() => setMode('mini')} intent={ mode == 'mini' ? 'primary' : 'none'} />
-                            <Button icon='square' onClick={() => setMode('full')} intent={ mode == 'full' ? 'primary' : 'none'} />
+                            <Button icon={mode == 'mini' ? 'minimize' : 'maximize'} onClick={() => setMode(mode == 'mini' ? 'full' : 'mini')} intent={Intent.NONE} />
+                            {/* <Button icon='grid-view' onClick={() => setMode('mini')} intent={ mode == 'mini' ? 'primary' : 'none'} /> */}
+                            {/* <Button icon='square' onClick={() => setMode('full')} intent={ mode == 'full' ? 'primary' : 'none'} /> */}
                         </div>
                     </div>
                     <CollectionRenderer items={filteredData.slice((page - 1) * resultsPerPage, page * resultsPerPage)} {...{ itemRenderer, setSelectedTab, mode }} />

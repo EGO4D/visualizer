@@ -3,7 +3,7 @@ import _ from "lodash";
 import { ResponsiveBar, ResponsiveBarCanvas } from '@nivo/bar'
 import { ResponsiveScatterPlot, ResponsiveScatterPlotCanvas } from '@nivo/scatterplot'
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { benchmark_values, scenario_values, device_values } from "../../components/FilterBox/filterData";
+import { benchmark_values, scenario_values, device_values, dimension_values } from "../../components/FilterBox/filterData";
 import { getHostname } from "../../utils";
 
 import "./Analyze.scss"
@@ -33,6 +33,11 @@ const barchart_configs = [
             hoursMeasure,
         ], sort_key: [videosMeasure['key']]
     },
+    // {
+    //     index_name: 'dimensions', index_values: dimension_values, filter_zeroes: true, measures: [
+    //         videosMeasure,
+    //     ], sort_key: [videosMeasure['key']]
+    // },
     {
         index_name: 'scenarios', index_values: scenario_values, filter_zeroes: true, measures: [
             videosMeasure,

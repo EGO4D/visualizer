@@ -26,6 +26,7 @@ import useStateWithUrlParam from "../hooks/useStateWithUrlParam";
 import "./CollectionView.scss"
 import FileUploadButton from "./PredictionsUpload/PredictionsUploadButton";
 import Footer from "../Footer";
+import SearchBox from "./SearchBox/SearchBox";
 
 
 function CollectionView({
@@ -72,9 +73,10 @@ function CollectionView({
             </Link>
           </NavbarGroup>
           <NavbarGroup align={Alignment.CENTER}>
+            {/* <SearchBox /> */}
             <FilterBox filterData={filterData} setFilteredData={setFilteredData} />
             <CSVLink data={gen_export_csv(filteredData)} target="_blank" filename={'ego4d_viz_filtered_videos'} >
-              <Button intent={Intent.PRIMARY} align={ALIGN_RIGHT} style={{ flex: '1 1 auto', margin: '7px' }}>Export Video UIDs</Button>
+              <Button align={ALIGN_RIGHT} style={{ flex: '1 1 auto', margin: '7px' }}>Export Video UIDs</Button>
             </CSVLink>
             {/* <FileUploadButton /> */}
           </NavbarGroup>

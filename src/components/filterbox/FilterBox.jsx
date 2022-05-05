@@ -80,8 +80,8 @@ export default function FilterBox({ filterData, setFilteredData }) {
         onParseOk(result);
     }, [filterData]); // Run pre-loaded url query when the page first loads
 
-    return <>
-        <Icon icon={'filter'} className='filterbox-search-icon' />
+    return <div style={{ display: 'flex', width: '100%' }}>
+        <Icon icon={'filter'} className='filterbox-icon' />
         <ReactFilterBox
             data={[]}
             options={filter_options}
@@ -91,5 +91,5 @@ export default function FilterBox({ filterData, setFilteredData }) {
             autoCompleteHandler={autoCompleteHandler}
             editorConfig={{ placeholder: `Enter a filter, e.g. ${sample_queries[Math.floor(Math.random() * sample_queries.length)]}` }}
         />
-    </>
+    </div>
 };
