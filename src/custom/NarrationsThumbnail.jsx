@@ -84,7 +84,7 @@ function NarrationsThumbnail({ item, setDetailIDs, mode, selectedFields }) {
                 <tr>
                   <th className='thumbnail-detail-label'>{f}:</th>
                   {/* <th>{item[f] && item[f].constructor.name}</th> */}
-                  <td className='thumbnail-detail-info'>{item[f] && item[f].constructor == Array ? item[f].map(x => <>{String(x)}<div className='separator'/></>) : item[f]}</td>
+                  <td className='thumbnail-detail-info'>{item[f] && item[f].constructor == Array ? item[f].map(x => <>{String(x)}<div className='separator' /></>) : item[f]}</td>
                 </tr>
               )}
             </tbody>
