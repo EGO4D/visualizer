@@ -4,18 +4,20 @@ import Pagination from "../../components/Pagination/Pagination";
 import { Button, FormGroup, Intent, MenuItem, Spinner } from "@blueprintjs/core";
 import { MultiSelect, Select } from "@blueprintjs/select";
 import useStateWithUrlParam from "../../hooks/useStateWithUrlParam"
+import _ from 'lodash-es'
 
 import "./Browse.scss"
 import { filter_options } from "../../components/FilterBox/filterData";
 
 const FIELD_BLOCKLIST = ['narrations']
+const DEFAULT_FIELDS = ['video_uid', 'benchmarks', 'summaries']
 
 export default function Browse({ setSelectedTab, isLoading, filteredData, page, itemRenderer, CollectionRenderer, setPage, error }) {
     const [mode, setMode] = useStateWithUrlParam('m', 'full');
-    const [resultsPerPage, setResultsPerPage] = useStateWithUrlParam('rpp', 24);
+    const [resultsPerPage, setResultsPerPage] = useStateWithUrlParam('ip', 24);
 
     const fieldOptions = useMemo(() => filter_options.map(opt => opt.columnField).filter(opt => !FIELD_BLOCKLIST.includes(opt)));
-    const [selectedFields, setSelectedFields] = useStateWithUrlParam('sf',['video_uid', 'benchmarks', 'summaries']);
+    const [selectedFields, setSelectedFields] = useStateWithUrlParam('sf', DEFAULT_FIELDS);
     const [fieldQuery, setFieldQuery] = useState('');
 
     // TODO: simplify how this is handled
@@ -28,11 +30,10 @@ export default function Browse({ setSelectedTab, isLoading, filteredData, page, 
     }, [filteredData, resultsPerPage]);
 
     // const fieldOptions = useMemo(() => filter_options.map(opt => opt.columnField));
-    const clearButton = selectedFields.length > 0 ? <Button icon="cross" minimal={true} onClick={() => setSelectedFields([])} /> : undefined;
+    const revertButton = _.isEqual(selectedFields, DEFAULT_FIELDS) ? undefined : <Button icon='undo' minimal={true} onClick={() => setSelectedFields(DEFAULT_FIELDS)} />;
 
     const totalPages = Math.ceil((filteredData?.length ?? 0) / resultsPerPage);
 
-    console.log(selectedFields);
     return (
         <div className="item-dynamic">
             <ErrorPane error={error} />
@@ -70,7 +71,7 @@ export default function Browse({ setSelectedTab, isLoading, filteredData, page, 
                                     tagRenderer={(x) => x}
                                     tagInputProps={{
                                         onRemove: (i) => setSelectedFields(selectedFields.filter(x => x !== i)),
-                                        rightElement: clearButton,
+                                        rightElement: revertButton,
                                         // tagProps: getTagProps,
                                     }}
                                     onItemSelect={(i) => setSelectedFields([...selectedFields, i])}>
@@ -97,7 +98,7 @@ export default function Browse({ setSelectedTab, isLoading, filteredData, page, 
                                 <Button text={`Items: ${resultsPerPage}`} rightIcon="caret-down" />
                             </Select>
                             <div className="mode-switcher">
-                                <Button icon={mode == 'mini' ? 'minimize' : 'maximize'} onClick={() => setMode(mode == 'mini' ? 'full' : 'mini')} intent={Intent.NONE} />
+                                <Button icon={mode == 'mini' ? 'maximize' : 'minimize'} onClick={() => setMode(mode == 'mini' ? 'full' : 'mini')} intent={Intent.NONE} />
                                 {/* <Button icon='grid-view' onClick={() => setMode('mini')} intent={ mode == 'mini' ? 'primary' : 'none'} /> */}
                                 {/* <Button icon='square' onClick={() => setMode('full')} intent={ mode == 'full' ? 'primary' : 'none'} /> */}
                             </div>

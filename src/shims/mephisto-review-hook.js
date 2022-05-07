@@ -17,8 +17,12 @@ function useMephistoReview({
     ? `${hostname}/feedback/${taskId}`
     : `${hostname}/feedback`;
 
+  const SEARCH_URL = `${hostname}/search`;
+
+  const API_KEY_HEADER = { 'x-api-key': localStorage.getItem(LOCAL_KEY) }
+
   const { isLoading, error, data } = useQuery(taskId ?? 'home', () =>
-    fetch(DATA_URL, { method: "GET", headers: { 'x-api-key': localStorage.getItem(LOCAL_KEY) } })
+    fetch(DATA_URL, { method: "GET", headers: API_KEY_HEADER })
       .then((res) => {
         if (res.status === 401) {
           navigate('/login');
@@ -31,18 +35,37 @@ function useMephistoReview({
   const submitFeedback = (feedback) =>
     fetch(FEEDBACK_URL, {
       method: "POST",
-      headers: { 'x-api-key': localStorage.getItem(LOCAL_KEY), 'Content-Type': 'application/json' },
-      body: JSON.stringify(feedback)
-    })
+      headers: { ...API_KEY_HEADER, 'Content-Type': 'application/json' },
+      body: JSON.stringify(feedback),
+    });
+
+  const useSearch = (query) =>
+    useQuery(
+      ['query', query],
+      ({ queryKey }) => {
+        return fetch(`${SEARCH_URL}?query=${encodeURIComponent(queryKey[1])}`, {
+          method: "GET",
+          headers: API_KEY_HEADER,
+        }).then((res) => {
+          return res.json();
+        })
+      },
+      {
+        refetchOnWindowFocus: false,
+        enabled: false,
+      }
+    );
+
 
   return {
+    data: data && data.data,
+    error: error,
+    filterData: data && data.filter_data,
     isLoading: isLoading,
     mode: data && data.mode,
-    data: data && data.data,
-    filterData: data && data.filter_data,
+    useSearch: useSearch,
     submitFeedback: submitFeedback,
     totalPages: (data && data.total_pages) || 1,
-    error: error,
   };
 }
 

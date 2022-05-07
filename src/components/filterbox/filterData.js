@@ -18,11 +18,11 @@ export const filter_options = [
         customOperatorFunc: (_category) => ['include', '!include'],
         customValuesFunc: (_c, _o) => modality_values,
     },
-    {
-        columnField: "narrations",
-        type: "array[text]",
-        customOperatorFunc: (_c) => ['contain', '!contain'],
-    },
+    // {
+    //     columnField: "narrations",
+    //     type: "array[text]",
+    //     customOperatorFunc: (_c) => ['contain', '!contain'],
+    // },
     {
         columnField: "scenarios",
         type: "array[text]",

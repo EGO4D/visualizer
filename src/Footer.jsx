@@ -6,15 +6,15 @@ export default function Footer() {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
     return <>
-        <div class="footer">
-            <div class="inner_footer">
-                <div class="logo_container">
+        <div className="footer">
+            <div className="inner_footer">
+                <div className="logo_container">
                     <a href="https://ego4d-data.org/">
                         <img src={"/static/ego-4d-logo-white.png"} alt="ego4d logo" />
                     </a>
                 </div>
 
-                <div class="footer_third">
+                <div className="footer_third">
                     <h1>Docs</h1>
                     <a href="https://ego4d-data.org/docs/">Intro</a>
                     <a href="https://ego4d-data.org/docs/data/annotation-guidelines/">Annotation Guidelines</a>
@@ -22,7 +22,7 @@ export default function Footer() {
                     <a href="https://ego4d-data.org/docs/contact/">Contact Us</a>
                 </div>
 
-                <div class="footer_third">
+                <div className="footer_third">
                     <h1>More</h1>
                     <a href="https://discuss.ego4d-data.org/">Discussion Board</a>
                     <a href="https://github.com/Ego4d">Github</a>

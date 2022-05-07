@@ -135,10 +135,10 @@ export default function Analyze({ filteredData, filterData }) {
         </div>
     })
 
-    let raw_videos = filteredData.filter((x) => !!x['embeddings']['tsne']);
+    let raw_videos = filteredData.filter((x) => !!x['_embeddings']['tsne']);
     let tagged_embs = []
     raw_videos.forEach(vid => {
-        let vid_embs = vid['embeddings']['tsne'];
+        let vid_embs = vid['_embeddings']['tsne'];
         vid_embs = vid_embs.constructor === Array ? vid_embs : [vid_embs];
         let tagged_vid_embs = vid_embs.map(emb => { return { ...emb, 'video_uid': vid['video_uid'], 'img': vid['_img'], 'category': vid['scenarios'][0] } })
         tagged_embs = [...tagged_embs, ...tagged_vid_embs];

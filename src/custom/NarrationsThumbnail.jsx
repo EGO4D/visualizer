@@ -29,9 +29,6 @@ function NarrationsThumbnail({ item, setDetailIDs, mode, selectedFields }) {
         alt="Thumbnail"
         style={{ width: item._img ? "100%" : "1px", height: "100%", objectFit: 'cover' }}
       />
-      {/* <span className='mini-info'>
-        { formatVideoSeconds(item.duration) }
-      </span> */}
     </div>
   }
   return (
@@ -81,10 +78,9 @@ function NarrationsThumbnail({ item, setDetailIDs, mode, selectedFields }) {
           <HTMLTable condensed={true} bordered={true} className='thumbnail-detail'>
             <tbody>
               {selectedFields.filter(x => !CUSTOM_FIELDS.includes(x)).map(f =>
-                <tr>
+                <tr key={f}>
                   <th className='thumbnail-detail-label'>{f}:</th>
-                  {/* <th>{item[f] && item[f].constructor.name}</th> */}
-                  <td className='thumbnail-detail-info'>{item[f] && item[f].constructor == Array ? item[f].map(x => <>{String(x)}<div className='separator' /></>) : item[f]}</td>
+                  <td className='thumbnail-detail-info'>{item[f] && item[f].constructor == Array ? item[f].map((x, i) => <>{i > 0 && <div className='separator' />}{String(x)}</>) : item[f]}</td>
                 </tr>
               )}
             </tbody>
@@ -96,25 +92,7 @@ function NarrationsThumbnail({ item, setDetailIDs, mode, selectedFields }) {
 }
 
 function getBenchmarks(item) {
-  // let benchmarks = item['quick_info']['splits'].map((s) => {return {tag: s.split('-')[0] , subtag: s.split('-')[1]}});
-
-
-  // 'av' in data['annotations'] && benchmarks.push({tag: 'av', subtag: data['annotations']['av']['splits'].join(" ")})
-  // 'fho_hands' in data['annotations'] && benchmarks.push({tag: 'fho_hands', subtag: data['annotations']['fho_hands']['splits'].join(" ")})
-  // 'fho_lta' in data['annotations'] && benchmarks.push({tag: 'fho_lta', subtag: data['annotations']['fho_lta']['splits'].join(" ")})
-  // 'fho_scod' in data['annotations'] && benchmarks.push({tag: 'fho_scod', subtag: data['annotations']['fho_scod']['splits'].join(" ")})
-  // 'fho_sta' in data['annotations'] && benchmarks.push({tag: 'fho_sta', subtag: data['annotations']['fho_sta']['splits'].join(" ")})
-  // 'moments' in data['annotations'] && benchmarks.push({tag: 'moments', subtag: data['annotations']['moments']['splits'].join(" ")})
-  // 'nlq' in data['annotations'] && benchmarks.push({tag: 'nlq', subtag: data['annotations']['nlq']['splits'].join(" ")})
-  // 'vq' in data['annotations'] && benchmarks.push({tag: 'vq', subtag: data['annotations']['vq']['splits'].join(" ")})
-  // 'narrations' in data['annotations'] && benchmarks.push({tag: 'narrations', subtag:''})
-
   return item.benchmarks.map((x) => { return { tag: x, subtag: '' } })
-}
-
-function getTags(data) {
-  // return []
-  return data.scenarios ?? []
 }
 
 export default NarrationsThumbnail;

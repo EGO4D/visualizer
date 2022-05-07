@@ -22,4 +22,12 @@
     display: flex;
     align-items: center;
     margin: 0 !important;
+
+    &.clickable {
+        cursor: pointer;
+
+        &:hover {
+            background-color: #f5f5f5;
+        }
+    }
 }

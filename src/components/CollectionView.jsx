@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useMephistoReview } from "../shims/mephisto-review-hook";
 import {
@@ -37,8 +37,8 @@ function CollectionView({
   const [query, setQueryAndURL, setQuery, setQueryURL] = useStateWithUrlParam('q', '');
   const [page, setPage] = useStateWithUrlParam('p', 1);
   const [filteredData, setFilteredData] = useState([]);
+  const [searchFilter, setSearchFilter] = useState();
   const [selectedTab, setSelectedTab] = useStateWithUrlParam('t', 'browse');
-  const navigate = useNavigate();
 
   const { filterData, isLoading, error } =
     useMephistoReview({
@@ -49,7 +49,19 @@ function CollectionView({
     return !!filteredData ? filteredData.map(o => { return { video_uid: o['video_uid'] } }) : []
   }
 
-  const total_duration_seconds = filteredData?.map((v) => (v['duration'] || 0)).reduce((s, a) => s + a, 0);
+  const locallyFilteredData = useMemo(
+    () => {
+      if (!!searchFilter) {
+        const searchIDs = Object.keys(searchFilter);
+        const matchingItems = filteredData.slice().filter(x => searchIDs.includes(x.video_uid));
+        matchingItems.sort((a, b) => searchIDs.indexOf(a.video_uid) - searchIDs.indexOf(b.video_uid));
+        return matchingItems;
+      }
+      return filteredData;
+    },
+    [filteredData, searchFilter]);
+
+  const total_duration_seconds = locallyFilteredData?.map((v) => (v['duration'] || 0)).reduce((s, a) => s + a, 0);
   const tabid_to_verb = {
     'browse': 'Browsing',
     'analyze': 'Analyzing',
@@ -70,7 +82,7 @@ function CollectionView({
             </Link>
           </NavbarGroup>
           <NavbarGroup align={Alignment.CENTER}>
-            {/* <SearchBox /> */}
+            <SearchBox setSearchFilter={setSearchFilter} />
             <FilterBox filterData={filterData} setFilteredData={setFilteredData} {...{ query, setQueryAndURL, setQuery, setQueryURL }} />
             {/* <CSVLink data={gen_export_csv(filteredData)} target="_blank" filename={'ego4d_viz_filtered_videos'} >
               <Button align={ALIGN_RIGHT} style={{ flex: '1 1 auto', margin: '7px' }}>Export Video UIDs</Button>
@@ -79,7 +91,7 @@ function CollectionView({
           </NavbarGroup>
         </div>
         <div>
-          {tabid_to_verb[selectedTab]} <span className='nav-info-important'>{filteredData?.length} / {filterData?.length ?? 0} videos</span>.
+          {tabid_to_verb[selectedTab]} <span className='nav-info-important'>{locallyFilteredData?.length} / {filterData?.length ?? 0} videos</span>.
           Total Duration: <span className='nav-info-important'>{
             total_duration_seconds > 3600 ? Math.round(total_duration_seconds / 3600 * 100) / 100 + ' hours' :
               total_duration_seconds > 60 ? Math.round(total_duration_seconds / 60 * 100) / 100 + ' minutes' :
@@ -110,11 +122,11 @@ function CollectionView({
       <main id="all-item-view-wrapper">
         <Tabs selectedTabId={selectedTab} onChange={setSelectedTab} animate={true} className={'main-tabs'} renderActiveTabPanelOnly={true}>
           <Tab id={'browse'} title={'Browse'} panel={
-            <Browse {...{ setSelectedTab, itemRenderer, CollectionRenderer, isLoading, filteredData, page, setPage, error }} />
+            <Browse filteredData={locallyFilteredData} {...{ setSelectedTab, itemRenderer, CollectionRenderer, isLoading, page, setPage, error }} />
           } />
 
           <Tab id={'analyze'} title={'Analyze'} panel={
-            <Analyze filteredData={filteredData} filterData={filterData} />
+            <Analyze filteredData={locallyFilteredData} filterData={filterData} />
           } />
         </Tabs>
       </main>

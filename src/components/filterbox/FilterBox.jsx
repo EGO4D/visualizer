@@ -14,7 +14,6 @@ const sample_queries = [
     'duration > 5000',
     'scenarios include Cooking',
     'benchmarks include fho_hands AND modalities include imu',
-    'narrations contain "instrument"',
     'is_stereo == true',
     'split_av == train',
     'split_em == val',
@@ -76,10 +75,11 @@ export default function FilterBox({ filterData, setFilteredData, query, setQuery
     useEffect(() => {
         var result = parser.parse(query);
         if (result.isError) { return }
-        new CustomResultProcessing(filter_options).process(filterData, result).length > 0 && onParseOk(result);
+        // new CustomResultProcessing(filter_options).process(filterData, result).length > 0 && onParseOk(result);
+        onParseOk(result);
     }, [filterData, query]); // Run pre-loaded url query when the page first loads
 
-    return <div style={{ display: 'flex', flexBasis: '100%', maxWidth: '100%'}}>
+    return <div style={{ display: 'flex', flexBasis: '65%', maxWidth: '65%'}}>
         <Icon icon={'filter'} className='filterbox-icon' />
         <ReactFilterBox
             data={[]}

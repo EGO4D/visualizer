@@ -1,30 +1,47 @@
-import { Icon, InputGroup } from "@blueprintjs/core";
-import React, { useEffect } from "react";
+import { Icon, InputGroup, Spinner, SpinnerSize } from "@blueprintjs/core";
+import React, { useEffect, useState } from "react";
 
-import ReactFilterBox, { SimpleResultProcessing, GridDataAutoCompleteHandler, FilterQueryParser } from "react-filter-box";
 import "react-filter-box/lib/react-filter-box.css"
 import "./SearchBox.scss"
 
 import useStateWithUrlParam from "../../hooks/useStateWithUrlParam";
+import { useMephistoReview } from "../../shims/mephisto-review-hook";
+import { getHostname } from "../../utils";
 
-const sample_queries = [
-    'benchmarks include moments',
-    'video_uid == a37f501d-5cc1-4cc2-8ac2-1ec4e66a86d2',
-    'duration > 5000',
-    'scenarios include Cooking',
-    'benchmarks include fho_hands AND modalities include imu',
-    'narrations contain "instrument"',
-    'is_stereo == true',
-    'split_av == train',
-    'split_em == val',
-    'split_fho == multi',
-    'splits include fho_scod-train'
-]
+export default function SearchBox({ setSearchFilter }) {
+    const { useSearch } = useMephistoReview({ hostname: getHostname() });
+    const [query, setQueryAndURL, setQuery, setQueryUrl] = useStateWithUrlParam('s', '');
+    const { isLoading, data, refetch } = useSearch(query);
 
-export default function SearchBox({ filterData, setFilteredData }) {
-    const [search, setSearchAndUrl, setSearch, setSearchUrl] = useStateWithUrlParam('s', '');
+    const onChange = (e) => {
+        setQuery(e.target.value);
+        if (e.target.value.length == 0) {
+            setSearchFilter(null);
+            setQueryUrl('');
+        }
+    }
+
+    const onSubmit = () => {
+        setQueryUrl(query);
+        query.length == 0
+            ? setSearchFilter(null)
+            : refetch();
+    }
+
+    useEffect(() => {
+        console.log(data);
+        setSearchFilter(data);
+    }, [data]);
+
+    useEffect(() => onSubmit(query), []);
+
+
+    // const submitBtn = <Button className='searchbox-icon' icon='arrow-right' onClick={(e) => search(e.target.value).then(res => console.log(res))} />
+    const searchIcon = isLoading
+        ? <Spinner size={SpinnerSize.SMALL} className='searchbox-icon' />
+        : <Icon icon={'search'} className='searchbox-icon clickable' onClick={onSubmit} />;
 
     return <>
-        <InputGroup className='searchbox' fill={true} placeholder='Semantic search for anything' leftElement={<Icon icon={'search'} className='searchbox-icon'/>} />
+        <InputGroup disabled={isLoading} className='searchbox' fill={true} placeholder='Semantic search for anything' leftElement={searchIcon} onKeyDown={(e) => e.key == 'Enter' && onSubmit(e)} onChange={onChange} value={query} />
     </>
 };
