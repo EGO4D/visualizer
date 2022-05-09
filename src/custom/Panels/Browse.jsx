@@ -87,6 +87,7 @@ export default function Browse({ setSelectedTab, isLoading, filteredData, page, 
                                 activeItem={resultsPerPage}
                                 itemRenderer={(x, { handleClick, modifiers, index }) =>
                                     <div
+                                        key={x}
                                         className={'pagenum-option' + (modifiers.active ? ' active' : '')}
                                         onClick={handleClick}
                                         onKeyDown={(e) => e.key === 'Enter' && handleClick.bind(this)}

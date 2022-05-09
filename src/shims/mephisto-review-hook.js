@@ -53,6 +53,7 @@ function useMephistoReview({
       {
         refetchOnWindowFocus: false,
         enabled: false,
+        // staleTime: Infinity,
       }
     );
 

@@ -59,19 +59,6 @@ export default function PredictionsUploadButton({ style }) {
         })
     }, [])
 
-    // const onInputChange = (event) => {
-    //     const file = event.target.files[0];
-    //     const reader = new FileReader();
-    //     reader.addEventListener('load', (event) => {
-    //         console.log("start");
-    //         console.log(event);
-    //         console.log(event.target.result);
-    //         const data = JSON.parse(event.target.result);
-    //         addUploadedData(file.name, data);
-    //     });
-    //     reader.readAsText(file);
-    // };
-
     return <>
         <Button icon={'upload'} intent="primary" text={"Add Predictions"} onClick={() => setIsDialogOpen(true)} style={{ ...style }} />
         <Dialog isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)} style={{ height: '80%' }}>

@@ -19,6 +19,7 @@
     "react-filter-box": "https://github.com/devanshk/react-filter-box",
     "react-ga": "^3.3.0",
     "react-ga4": "^1.4.1",
+    "react-loading-skeleton": "^3.1.0",
     "react-player": "^2.9.0",
     "react-query": "^3.34.19",
     "react-responsive-canvas": "^1.0.2",

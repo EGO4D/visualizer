@@ -53,8 +53,13 @@ function CollectionView({
     () => {
       if (!!searchFilter) {
         const searchIDs = Object.keys(searchFilter);
-        const matchingItems = filteredData.slice().filter(x => searchIDs.includes(x.video_uid));
-        matchingItems.sort((a, b) => searchIDs.indexOf(a.video_uid) - searchIDs.indexOf(b.video_uid));
+        const matchingItems =
+          filteredData
+            .filter(x => searchIDs.includes(x.video_uid))
+            .map(obj => { return { ...obj, ...searchFilter[obj.video_uid] } })
+            .sort((a, b) => searchIDs.indexOf(a.video_uid) - searchIDs.indexOf(b.video_uid))
+        console.log("matching");
+        console.log(matchingItems);
         return matchingItems;
       }
       return filteredData;
@@ -82,7 +87,7 @@ function CollectionView({
             </Link>
           </NavbarGroup>
           <NavbarGroup align={Alignment.CENTER}>
-            <SearchBox setSearchFilter={setSearchFilter} />
+            {/* <SearchBox setSearchFilter={setSearchFilter} /> */}
             <FilterBox filterData={filterData} setFilteredData={setFilteredData} {...{ query, setQueryAndURL, setQuery, setQueryURL }} />
             {/* <CSVLink data={gen_export_csv(filteredData)} target="_blank" filename={'ego4d_viz_filtered_videos'} >
               <Button align={ALIGN_RIGHT} style={{ flex: '1 1 auto', margin: '7px' }}>Export Video UIDs</Button>
