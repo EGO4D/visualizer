@@ -41,8 +41,6 @@ export default function VideoModules(props) {
     const { data, annotations, progress, videoRef, setPlaying, duration } = props;
     const extracted_modules = useMemo(
         () => {
-            var start = new Date();
-            // console.log("video_modules start");
             const res = module_generators.map(
                 ({ Module, data_selector, data_mapper }) => {
                     const data_generator = (annotations) => {
@@ -63,7 +61,6 @@ export default function VideoModules(props) {
                         })
                 }
             ).flat()
-            // console.log("video_modules took ", new Date() - start, " milliseconds");
             return res;
         }, [annotations]);
 

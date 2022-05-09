@@ -45,10 +45,6 @@ function CollectionView({
       hostname: getHostname(),
     });
 
-  const gen_export_csv = (filteredData) => {
-    return !!filteredData ? filteredData.map(o => { return { video_uid: o['video_uid'] } }) : []
-  }
-
   const locallyFilteredData = useMemo(
     () => {
       if (!!searchFilter) {
@@ -58,13 +54,15 @@ function CollectionView({
             .filter(x => searchIDs.includes(x.video_uid))
             .map(obj => { return { ...obj, ...searchFilter[obj.video_uid] } })
             .sort((a, b) => searchIDs.indexOf(a.video_uid) - searchIDs.indexOf(b.video_uid))
-        console.log("matching");
-        console.log(matchingItems);
         return matchingItems;
       }
       return filteredData;
     },
     [filteredData, searchFilter]);
+
+    const gen_export_csv = (locallyFilteredData) => {
+      return !!locallyFilteredData ? locallyFilteredData.map(o => { return { video_uid: o['video_uid'] } }) : []
+    }
 
   const total_duration_seconds = locallyFilteredData?.map((v) => (v['duration'] || 0)).reduce((s, a) => s + a, 0);
   const tabid_to_verb = {
@@ -89,9 +87,9 @@ function CollectionView({
           <NavbarGroup align={Alignment.CENTER}>
             {/* <SearchBox setSearchFilter={setSearchFilter} /> */}
             <FilterBox filterData={filterData} setFilteredData={setFilteredData} {...{ query, setQueryAndURL, setQuery, setQueryURL }} />
-            {/* <CSVLink data={gen_export_csv(filteredData)} target="_blank" filename={'ego4d_viz_filtered_videos'} >
-              <Button align={ALIGN_RIGHT} style={{ flex: '1 1 auto', margin: '7px' }}>Export Video UIDs</Button>
-            </CSVLink> */}
+            <CSVLink data={gen_export_csv(locallyFilteredData)} target="_blank" filename={'ego4d_viz_filtered_videos'} >
+              <Button align={ALIGN_RIGHT} style={{ flex: '1 1 auto', margin: '7px', width: '140px'}}>Export Video UIDs</Button>
+            </CSVLink>
             {/* <FileUploadButton /> */}
           </NavbarGroup>
         </div>

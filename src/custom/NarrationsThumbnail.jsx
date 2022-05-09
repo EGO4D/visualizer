@@ -18,8 +18,6 @@ function NarrationsThumbnail({ item, setDetailIDs, mode, selectedFields }) {
       {item.video_uid}
     </p>
 
-  // console.log(item);
-
   let thumbnail;
   if (!!item.timestamps) {
     thumbnail = <div style={{ position: 'relative' }}>

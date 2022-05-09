@@ -50,10 +50,7 @@ function JSONSpeedViewer({ data, customRenderer, videoRef, setPlaying, videoOffs
     }
 
     const memoized_graph = useMemo(() => {
-        let start = new Date();
-        // console.log("json_to_treenode_info start");
         const res = json_to_treenodeinfo(data, [], '')[0].children;
-        // console.log("json_to_treenode_info took ", new Date()-start, " milliseconds");
         return res;
     }, [data])
 

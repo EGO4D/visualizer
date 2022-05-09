@@ -223,7 +223,6 @@ export default function useBBoxes({ annotations, videoRef, canvasRef, dimensions
                 );
                 // ctx.fill();
                 ctx.stroke();
-                console.log(x, y);
 
                 // label bg
                 ctx.fillRect(

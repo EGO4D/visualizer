@@ -29,7 +29,6 @@ export default function SearchBox({ setSearchFilter }) {
     }
 
     useEffect(() => {
-        console.log(data);
         setSearchFilter(data);
     }, [data]);
 
