@@ -28,6 +28,7 @@ import FileUploadButton from "./PredictionsUpload/PredictionsUploadButton";
 import Footer from "../Footer";
 import SearchBox from "./SearchBox/SearchBox";
 import { benchmark_values } from "./FilterBox/filterData";
+import { orderBy } from "lodash-es";
 
 
 function CollectionView({
@@ -38,7 +39,7 @@ function CollectionView({
   const [page, setPage] = useStateWithUrlParam('p', 1);
   const [filteredData, setFilteredData] = useState([]);
   const [searchFilter, setSearchFilter] = useState();
-  const [selectedTab, setSelectedTab] = useStateWithUrlParam('t', 'browse');
+  const [selectedTab, setSelectedTab] = useStateWithUrlParam('b', 'browse');
 
   const { filterData, isLoading, error } =
     useMephistoReview({
@@ -48,12 +49,13 @@ function CollectionView({
   const locallyFilteredData = useMemo(
     () => {
       if (!!searchFilter) {
-        const searchIDs = Object.keys(searchFilter);
+        const { order, metadata } = searchFilter;
+        console.log(searchFilter);
         const matchingItems =
           filteredData
-            .filter(x => searchIDs.includes(x.video_uid))
-            .map(obj => { return { ...obj, ...searchFilter[obj.video_uid] } })
-            .sort((a, b) => searchIDs.indexOf(a.video_uid) - searchIDs.indexOf(b.video_uid))
+            .filter(x => order.includes(x.video_uid))
+            .map(obj => { return { ...obj, ...metadata[obj.video_uid] } })
+            .sort((a, b) => order.indexOf(a.video_uid) - order.indexOf(b.video_uid))
         return matchingItems;
       }
       return filteredData;
@@ -85,11 +87,11 @@ function CollectionView({
             </Link>
           </NavbarGroup>
           <NavbarGroup align={Alignment.CENTER}>
-            {/* <SearchBox setSearchFilter={setSearchFilter} /> */}
             <FilterBox filterData={filterData} setFilteredData={setFilteredData} {...{ query, setQueryAndURL, setQuery, setQueryURL }} />
-            <CSVLink data={gen_export_csv(locallyFilteredData)} target="_blank" filename={'ego4d_viz_filtered_videos'} >
+            <SearchBox setSearchFilter={setSearchFilter} />
+            {/* <CSVLink data={gen_export_csv(locallyFilteredData)} target="_blank" filename={'ego4d_viz_filtered_videos'} >
               <Button align={ALIGN_RIGHT} style={{ flex: '1 1 auto', margin: '7px', width: '140px'}}>Export Video UIDs</Button>
-            </CSVLink>
+            </CSVLink> */}
             {/* <FileUploadButton /> */}
           </NavbarGroup>
         </div>

@@ -11,23 +11,10 @@ function GridCollection({ items, itemRenderer: ItemRenderer = JSONItem, setDetai
       {items.map((item) => {
         return (
           <Link
-            to={`/${item.video_uid}?${searchParams.toString()}`}
-            // to={'#'} // Add videos as tabs
+            to={`/${item.video_uid}?${searchParams.toString()}${!!item.timestamps ? '&t='+item.timestamps[0] : ''}`}
             style={{ textDecoration: "none" }}
             key={item.video_uid}
             id={`item-${item.video_uid}`}
-            // onClick={ // Add videos as tabs
-            //   (e) => {
-            //     e.preventDefault();
-
-            //     if (e.metaKey || e.ctrlKey) {
-            //       setDetailIDs([item.video_uid, ...detailIDs]);
-            //     } else {
-            //       setDetailIDs([item.video_uid]);
-            //       setSelectedTab(item.video_uid);
-            //     }
-            //   }
-            // }
           >
             <ItemRenderer item={item} setDetailIDs={setDetailIDs} mode={mode} selectedFields={selectedFields} />
           </Link>

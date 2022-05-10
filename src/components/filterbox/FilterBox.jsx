@@ -79,7 +79,7 @@ export default function FilterBox({ filterData, setFilteredData, query, setQuery
         onParseOk(result);
     }, [filterData, query]); // Run pre-loaded url query when the page first loads
 
-    return <div style={{ display: 'flex', flexBasis: '100%', maxWidth: '100%'}}>
+    return <div style={{ display: 'flex', flexBasis: '65%', maxWidth: '65%', paddingRight: '10px'}}>
         <Icon icon={'filter'} className='filterbox-icon' />
         <ReactFilterBox
             data={[]}

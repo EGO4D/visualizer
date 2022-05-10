@@ -14,10 +14,14 @@ import { getHostname } from "../utils";
 import ErrorPane from "./ErrorPane";
 import VersionHeader from "./VersionHeader";
 
-// const AppToaster = Toaster.create({
-//   className: "recipe-toaster",
-//   position: Position.TOP,
-// });
+const PARAM_FILTER = ['t'] // Params filtered out when returning to main menu
+
+const filter_params = (searchParams) => {
+  PARAM_FILTER.forEach((f) => {
+    searchParams.has(f) && searchParams.delete(f)
+  });
+  return searchParams;
+}
 
 function ItemView({
   itemRenderer: ItemRenderer = JSONItem,
@@ -36,25 +40,25 @@ function ItemView({
     <>
       <VersionHeader />
       <Navbar fixedToTop={true} className="navbar-wrapper">
-          <NavbarGroup>
+        <NavbarGroup>
+          {mode === "ALL" ? (
+            <>
+              <Link to={`/?${filter_params(searchParams).toString()}`} style={{ textDecoration: "none" }}>
+                <Button intent="primary" icon="caret-left" id="home-button">
+                  <b>Ego4D Explorer</b>
+                </Button>
+              </Link>
+              <NavbarDivider />
+            </>
+          ) : null}
+          <NavbarHeading className="navbar-header">
             {mode === "ALL" ? (
-              <>
-                <Link to={`/?${searchParams.toString()}`} style={{ textDecoration: "none" }}>
-                  <Button intent="primary" icon="caret-left" id="home-button">
-                    <b>Ego4D Explorer</b>
-                  </Button>
-                </Link>
-                <NavbarDivider />
-              </>
-            ) : null}
-            <NavbarHeading className="navbar-header">
-              {mode === "ALL" ? (
-                <b>Viewing video: {id}</b>
-              ) : (
-                <b>Loading video: {id}</b>
-              )}
-            </NavbarHeading>
-          </NavbarGroup>
+              <b>Viewing video: {id}</b>
+            ) : (
+              <b>Loading video: {id}</b>
+            )}
+          </NavbarHeading>
+        </NavbarGroup>
       </Navbar>
       <main className={`item-view mode-${mode}`}>
         {isLoading ? (

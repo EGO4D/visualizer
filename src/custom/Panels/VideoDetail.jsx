@@ -14,6 +14,7 @@ import "./VideoDetail.scss";
 import { Link } from "react-router-dom";
 import useBBoxes from "../Utility/useBBoxes";
 import VideoControls from "../../components/VideoControls";
+import useStateWithUrlParam from "../../hooks/useStateWithUrlParam";
 
 export default function VideoDetail({ id }) {
     const {
@@ -27,6 +28,7 @@ export default function VideoDetail({ id }) {
     const [playing, setPlaying] = useState(false);
     const [playerReady, setPlayerReady] = useState(false);
     const [buffering, setBuffering] = useState(false);
+    const [startTime, _] = useStateWithUrlParam('t', undefined)
     const uploadedData = useUploadedDataStore(state => state.uploadedData);
     const canvasRef = useRef();
     const videoRef = useRef();
@@ -47,31 +49,31 @@ export default function VideoDetail({ id }) {
     // TODO: Get image paths from annotations instead of hardcoding them
     // /assets/viz/{k}_small.jpg
     // TODO: bring back concurrent videos with a better UI
-    const concurrent_videos = React.useMemo(() => {
-        return null;
-        return data?._concurrent_videos && data._concurrent_videos.length > 0 && <>
-            <h3>Concurrent Videos:</h3>
-            <div className='videodetail-concurrent-videos-container'>
-                {data._concurrent_videos.filter(uid => uid !== data.video_uid).map(uid => <div className='videodetail-concurrent-video'>
-                    {/* <div className='videodetail-concurrent-video-title'>{uid}</div> */}
-                    <Link
-                        to={`/${uid}`}
-                        // to={'#'} // Add videos as tabs
-                        style={{ textDecoration: "none" }}
-                        key={uid}>
-                        <img
-                            className='videodetail-concurrent-video-thumbnail'
-                            role="presentation"
-                            src={
-                                getHostname() + `/assets/viz/${uid}_small.jpg`
-                            }
-                            alt="Thumbnail"
-                        />
-                    </Link>
-                </div>)}
-            </div>
-        </>
-    }, [data]);
+    // const concurrent_videos = React.useMemo(() => {
+    //     return null;
+    //     return data?._concurrent_videos && data._concurrent_videos.length > 0 && <>
+    //         <h3>Concurrent Videos:</h3>
+    //         <div className='videodetail-concurrent-videos-container'>
+    //             {data._concurrent_videos.filter(uid => uid !== data.video_uid).map(uid => <div className='videodetail-concurrent-video'>
+    //                 {/* <div className='videodetail-concurrent-video-title'>{uid}</div> */}
+    //                 <Link
+    //                     to={`/${uid}`}
+    //                     // to={'#'} // Add videos as tabs
+    //                     style={{ textDecoration: "none" }}
+    //                     key={uid}>
+    //                     <img
+    //                         className='videodetail-concurrent-video-thumbnail'
+    //                         role="presentation"
+    //                         src={
+    //                             getHostname() + `/assets/viz/${uid}_small.jpg`
+    //                         }
+    //                         alt="Thumbnail"
+    //                     />
+    //                 </Link>
+    //             </div>)}
+    //         </div>
+    //     </>
+    // }, [data]);
 
     const annotation_trees = React.useMemo(() => {
         return data && <>
@@ -129,7 +131,11 @@ export default function VideoDetail({ id }) {
                             width={'100%'}
                             height={'auto'}
                             progressInterval={350}
-                            onReady={() => setPlayerReady(true)}
+                            onReady={() => {
+                                // Just once, seek to passed-in start time
+                                !playerReady && !!startTime && videoRef.current.seekTo(startTime, 'seconds');
+                                setPlayerReady(true);
+                            }}
                             onProgress={({ playedSeconds }) => {
                                 setProgress(playedSeconds);
                             }}
@@ -152,7 +158,7 @@ export default function VideoDetail({ id }) {
                     {videoModules}
                 </div>
                 <div className="segment-viewer">
-                    {concurrent_videos}
+                    {/* {concurrent_videos} */}
                     {annotation_trees}
                 </div>
             </div>
