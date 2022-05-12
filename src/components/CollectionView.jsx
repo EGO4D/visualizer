@@ -50,7 +50,6 @@ function CollectionView({
     () => {
       if (!!searchFilter) {
         const { order, metadata } = searchFilter;
-        console.log(searchFilter);
         const matchingItems =
           filteredData
             .filter(x => order.includes(x.video_uid))

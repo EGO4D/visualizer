@@ -62,9 +62,9 @@ function JSONSpeedViewer({ data, customRenderer, videoRef, setPlaying, videoOffs
 }
 
 // Enforces order of items in list, others are placed at the end
-function keyCompare(a, b) {
+export function keyCompare(a, b) {
     const quick_info = ['video_uid', 'video_source', 'device', 'metadata',];
-    const benchmarks = ['av', 'moments', 'vq', 'nlq', 'fho_hands', 'fho_lta', 'fho_scod', 'fho_sta', 'narrations',];
+    const benchmarks = ['narrations', 'av', 'moments', 'vq', 'nlq', 'fho_hands', 'fho_lta', 'fho_scod', 'fho_sta',];
     const time_segments = ['video_frame', 'start_time', 'end_time', 'label',];
     const bboxes = ['x', 'y', 'width', 'height',];
     const fho_frames = ['pre_45', 'pre_30', 'pre_15', 'pre_frame', 'contact_frame', 'pnr_frame', 'post_frame',];

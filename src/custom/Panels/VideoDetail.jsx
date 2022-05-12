@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
 import ReactPlayer from "react-player"; /* dependency */
-import JSONSpeedViewer from "../JSONSpeedViewer";
+import JSONSpeedViewer, { keyCompare } from "../JSONSpeedViewer";
 import CustomLabelRenderer from "../CustomLabelRenderer";
 import VideoModules from "../../components/VideoModules";
 import { ProgressBar, Tab, Tabs } from "@blueprintjs/core";
@@ -42,38 +42,8 @@ export default function VideoDetail({ id }) {
     const dimensions = data?.quick_info?.metadata?.dimensions.slice(1, -1).split(",").map(x => x.trim()).map(parseFloat);
 
     useEffect(() => {
-        !selectedTab && setSelectedTab(Object.keys(data?.annotations ?? [''])[0]);
+        !selectedTab && setSelectedTab(Object.keys(data?.annotations ?? ['']).sort(keyCompare)[0]);
     }, [data])
-
-    // Annotation Units
-    // TODO: Get image paths from annotations instead of hardcoding them
-    // /assets/viz/{k}_small.jpg
-    // TODO: bring back concurrent videos with a better UI
-    // const concurrent_videos = React.useMemo(() => {
-    //     return null;
-    //     return data?._concurrent_videos && data._concurrent_videos.length > 0 && <>
-    //         <h3>Concurrent Videos:</h3>
-    //         <div className='videodetail-concurrent-videos-container'>
-    //             {data._concurrent_videos.filter(uid => uid !== data.video_uid).map(uid => <div className='videodetail-concurrent-video'>
-    //                 {/* <div className='videodetail-concurrent-video-title'>{uid}</div> */}
-    //                 <Link
-    //                     to={`/${uid}`}
-    //                     // to={'#'} // Add videos as tabs
-    //                     style={{ textDecoration: "none" }}
-    //                     key={uid}>
-    //                     <img
-    //                         className='videodetail-concurrent-video-thumbnail'
-    //                         role="presentation"
-    //                         src={
-    //                             getHostname() + `/assets/viz/${uid}_small.jpg`
-    //                         }
-    //                         alt="Thumbnail"
-    //                     />
-    //                 </Link>
-    //             </div>)}
-    //         </div>
-    //     </>
-    // }, [data]);
 
     const annotation_trees = React.useMemo(() => {
         return data && <>
@@ -83,7 +53,7 @@ export default function VideoDetail({ id }) {
             <h3>Annotations:</h3>
             <Tabs selectedTabId={selectedTab} onChange={setSelectedTab} animate={true}>
                 {
-                    Object.keys(data.annotations).map((k) =>
+                    Object.keys(data.annotations).sort(keyCompare).map((k) =>
                         <Tab id={k} title={k} key={k} panel={
                             <div style={{ display: 'flex', height: '100%' }}>
                                 <JSONSpeedViewer data={data.annotations[k]} customRenderer={CustomLabelRenderer} videoRef={videoRef} setPlaying={setPlaying} videoOffset={data['_video_offset']} expandThreshold={26} />

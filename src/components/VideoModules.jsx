@@ -7,9 +7,16 @@
 import React, { useMemo } from 'react';
 import { dfs_find } from '../custom/Utility/ObjectSearchUtils';
 import TimeSegmentsModule from './VideoModules/TimeSegmentsModule';
+import LabeledFrameModule from './VideoModules/LabeledFrameModule';
+import "./VideoModules.scss"
 
 // Type: [{ module: React.FC<{data: data_obj, ...}>, data_selector: Object -> [data_obj] }]
 const module_generators = [
+    {
+        'Module': LabeledFrameModule,
+        'data_selector': (v, path) => v?.constructor === Array && v.filter((vchild) => vchild?._type === 'labeled_frame').length > 0,
+        'data_mapper': ({ root, path }) => root.filter((vchild) => vchild?._type == 'labeled_frame').map(({ video_time: { video_time: time }, label }) => { return { video_time: time, label: label } }),
+    },
     {
         'Module': TimeSegmentsModule,
         'data_selector': (v, path) => !path.includes('people') && v?.constructor === Array && v.filter((vchild) => vchild?._type === 'time_segment').length > 0,
@@ -65,7 +72,7 @@ export default function VideoModules(props) {
         }, [annotations]);
 
     const modules = extracted_modules.map(({ Module, label, extracted_data }) =>
-        <div key={label}>
+        <div key={label} className="video-module">
             <span>{label}</span>
             <Module {...props} data={extracted_data} />
         </div>
