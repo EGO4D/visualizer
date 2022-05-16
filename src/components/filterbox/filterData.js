@@ -1,11 +1,12 @@
 const numberOpFunc = (_category) => ['==', '>', '<']
 
 export const filter_options = [
-    {
-        columnField: "video_uid",
-        type: "text",
-        customOperatorFunc: (_category) => ['==', "!="]
-    },
+    // Moved to FilterBox.jsx so we can use hooks
+    // {
+    //     columnField: "video_uid",
+    //     type: "text",
+    //     customOperatorFunc: (_category) => ['==', "!="]
+    // },
     {
         columnField: "benchmarks",
         type: "array[text]",

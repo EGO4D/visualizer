@@ -24,11 +24,12 @@ import VersionHeader from "./VersionHeader";
 import useStateWithUrlParam from "../hooks/useStateWithUrlParam";
 // import VideoDetail from "../custom/Panels/VideoDetail";
 import "./CollectionView.scss"
-import FileUploadButton from "./PredictionsUpload/PredictionsUploadButton";
 import Footer from "../Footer";
 import SearchBox from "./SearchBox/SearchBox";
 import { benchmark_values } from "./FilterBox/filterData";
-import { orderBy } from "lodash-es";
+import FileUploadButton from "./PredictionsUpload/PredictionsUploadButton";
+import FilterlistUploadButton from "./FilterlistUpload/FilterlistUploadButton";
+import PredictionsUploadButton from "./PredictionsUpload/PredictionsUploadButton";
 
 
 function CollectionView({
@@ -61,9 +62,9 @@ function CollectionView({
     },
     [filteredData, searchFilter]);
 
-    const gen_export_csv = (locallyFilteredData) => {
-      return !!locallyFilteredData ? locallyFilteredData.map(o => { return { video_uid: o['video_uid'] } }) : []
-    }
+  const gen_export_csv = (locallyFilteredData) => {
+    return !!locallyFilteredData ? locallyFilteredData.map(o => { return { video_uid: o['video_uid'] } }) : []
+  }
 
   const total_duration_seconds = locallyFilteredData?.map((v) => (v['duration'] || 0)).reduce((s, a) => s + a, 0);
   const tabid_to_verb = {
@@ -94,13 +95,17 @@ function CollectionView({
             {/* <FileUploadButton /> */}
           </NavbarGroup>
         </div>
-        <div>
-          {tabid_to_verb[selectedTab]} <span className='nav-info-important'>{locallyFilteredData?.length} / {filterData?.length ?? 0} videos</span>.
-          Total Duration: <span className='nav-info-important'>{
-            total_duration_seconds > 3600 ? Math.round(total_duration_seconds / 3600 * 100) / 100 + ' hours' :
-              total_duration_seconds > 60 ? Math.round(total_duration_seconds / 60 * 100) / 100 + ' minutes' :
-                total_duration_seconds + ' seconds'
-          }</span>.
+        <div className='navbar-row2'>
+          <div>
+            {tabid_to_verb[selectedTab]} <span className='nav-info-important'>{locallyFilteredData?.length} / {filterData?.length ?? 0} videos</span>.
+            Total Duration: <span className='nav-info-important'>{
+              total_duration_seconds > 3600 ? Math.round(total_duration_seconds / 3600 * 100) / 100 + ' hours' :
+                total_duration_seconds > 60 ? Math.round(total_duration_seconds / 60 * 100) / 100 + ' minutes' :
+                  total_duration_seconds + ' seconds'
+            }</span>.
+          </div>
+
+          <FilterlistUploadButton />
 
           {false &&
             benchmark_values.map((benchmark) => {

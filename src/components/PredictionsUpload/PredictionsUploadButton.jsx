@@ -50,7 +50,7 @@ export default function PredictionsUploadButton({ style }) {
     const [dropdownStates, setDropdownState] = useState({});
     const addUploadedData = useUploadedDataStore(state => state.addData);
     const removeUploadedData = useUploadedDataStore(state => state.removeData);
-    const uploadedData = useUploadedDataStore(state => state.uploadedData);
+    const uploadedData = useUploadedDataStore(state => state.data);
     const onDrop = useCallback(acceptedFiles => {
         acceptedFiles.map((file) => {
             const reader = new FileReader();
