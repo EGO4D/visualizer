@@ -33,7 +33,7 @@ const bbox_generators = [
     },
     {
         'tabs': ['vq'],
-        'data_selector': (v, path) => v._type === 'vq_query_set',
+        'data_selector': (v, path) => v._type === 'vq_query_set' && v['visual_crop'],
         'data_mapper': ({ root, path }) => {
             let { x, y, width, height, video_frame: { frame_number: frame } } = root['visual_crop'];
             return [{ label: `${root['object_title']}`, kf: keyframes([{ time: frame, value: [x, y, width, height] }]), interpolate: false, min: frame, max: frame }];

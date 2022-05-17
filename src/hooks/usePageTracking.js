@@ -4,7 +4,7 @@ import { useLocation } from "react-router-dom";
 import ReactGA from 'react-ga4';
 const GA_MEASUREMENT_ID = 'G-E3CCWL27RK';
 
-export default usePageTracking = () => {
+export default function usePageTracking() {
     const location = useLocation();
     const [initialized, setInitialized] = useState(false);
 

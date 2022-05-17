@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider, useQuery } from 'react-query';
-// import usePageTracking from './hooks/usePageTracking';
+import CookieConsent, { getCookieConsentValue } from "react-cookie-consent";
+import usePageTracking from './hooks/usePageTracking';
 import CollectionView from "./components/CollectionView";
 import ItemView from "./components/ItemView";
+import { useLocation } from 'react-router-dom'
 
 import { GridCollection, JSONItem, WordCloudItem } from "./renderers";
 import NarrationsThumbnail from "./custom/NarrationsThumbnail";
@@ -16,10 +18,19 @@ import "@blueprintjs/core/lib/css/blueprint.css";
 import "./App.scss";
 import "./custom.scss";
 
+const COOKIE_NAME = "ganalytics_cookie_consent"
+
 const queryClient = new QueryClient();
 
+function PageAnalytics() {
+    usePageTracking();
+    return <></>
+}
+
 export default function App() {
-    // usePageTracking(); // Removed until we have a privacy policy
+    const [cookiesAccepted, setCookiesAccepted] = useState(getCookieConsentValue(COOKIE_NAME));
+    const location = useLocation();
+    const showCookieConsent = location.pathname !== '/login';
 
     return (
         <QueryClientProvider client={queryClient}>
@@ -32,6 +43,23 @@ export default function App() {
                     itemRenderer={NarrationsThumbnail}
                 />} />
             </Routes>
+
+            {/* Cookie Policy and GAnalytics */}
+            {cookiesAccepted && <PageAnalytics />}
+            {showCookieConsent &&
+                <CookieConsent
+                    location="bottom"
+                    buttonText="Accept and Close"
+                    cookieName={COOKIE_NAME}
+                    style={{ background: '#7762ce', width: '100%', left: 'auto', position: 'fixed' }}
+                    buttonStyle={{ background: "#fff", fontSize: "13px" }}
+                    onAccept={() => setCookiesAccepted(true)}>
+                    We use Google Analytics to understand page use and develop this website. To learn more, see <a href="https://developers.google.com/analytics/devguides/collection/gtagjs/cookie-usage" style={{ color: 'rgb(86 191 255)' }}>here</a>.
+                    <br />
+                    To opt out of being tracked via Google Analytics, you can also use Google's opt-out browser add-on <a href="https://tools.google.com/dlpage/gaoptout" style={{ color: 'rgb(86 191 255)' }}>here</a>.
+                </CookieConsent>
+            }
+
         </QueryClientProvider>
     );
 }

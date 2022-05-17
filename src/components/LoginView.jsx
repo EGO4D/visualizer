@@ -34,7 +34,7 @@ function LoginView() {
     <Card className="login-dialog" interactive={false} elevation={Elevation.THREE}>
         <h1>Ego4D Explorer</h1>
         <InputGroup
-            value={login_key}
+            value={login_key ?? ''}
             onChange={event => setLoginKey(event.target.value)}
             placeholder="Enter your licensed AWS Access ID"
             rightElement={lockButton}

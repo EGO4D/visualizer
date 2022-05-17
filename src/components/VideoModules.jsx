@@ -37,9 +37,10 @@ const module_generators = [
         'data_selector': (v, path) => v?.constructor === Array && v?.length > 0 && v[0]?._type === 'vq_query_set',
         'data_mapper': ({ root, path }) => {
             return root.map((query_set) => {
+                if(!query_set.response_track?.frames){ return null } // TODO: This is hacky, fix it in the data exporter
                 const frames = query_set['response_track']['frames'].map(({ video_frame: { frame_number } }) => frame_number);
                 return { start: Math.min(...frames) / 30.0, end: Math.max(...frames) / 30.0, label: query_set['object_title'] };
-            })
+            }).filter(x => !!x)
         }
     }
 ]
