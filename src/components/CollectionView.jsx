@@ -61,9 +61,9 @@ function CollectionView({
     },
     [filteredData, searchFilter]);
 
-    const gen_export_csv = (locallyFilteredData) => {
-      return !!locallyFilteredData ? locallyFilteredData.map(o => { return { video_uid: o['video_uid'] } }) : []
-    }
+  const gen_export_csv = (locallyFilteredData) => {
+    return !!locallyFilteredData ? locallyFilteredData.map(o => { return { video_uid: o['video_uid'] } }) : []
+  }
 
   const total_duration_seconds = locallyFilteredData?.map((v) => (v['duration'] || 0)).reduce((s, a) => s + a, 0);
   const tabid_to_verb = {
@@ -88,9 +88,6 @@ function CollectionView({
           <NavbarGroup align={Alignment.CENTER}>
             <FilterBox filterData={filterData} setFilteredData={setFilteredData} {...{ query, setQueryAndURL, setQuery, setQueryURL }} />
             <SearchBox setSearchFilter={setSearchFilter} />
-            {/* <CSVLink data={gen_export_csv(locallyFilteredData)} target="_blank" filename={'ego4d_viz_filtered_videos'} >
-              <Button align={ALIGN_RIGHT} style={{ flex: '1 1 auto', margin: '7px', width: '140px'}}>Export Video UIDs</Button>
-            </CSVLink> */}
             {/* <FileUploadButton /> */}
           </NavbarGroup>
         </div>
@@ -101,6 +98,10 @@ function CollectionView({
               total_duration_seconds > 60 ? Math.round(total_duration_seconds / 60 * 100) / 100 + ' minutes' :
                 total_duration_seconds + ' seconds'
           }</span>.
+
+          <CSVLink data={gen_export_csv(locallyFilteredData)} target="_blank" filename={'ego4d_subset_ids'} >
+            <Button align={ALIGN_RIGHT} style={{ flex: '1 1 auto', margin: '7px', width: '140px', position: 'absolute', right: '8px', top: '37.5px' }}>Export Video UIDs</Button>
+          </CSVLink>
 
           {false &&
             benchmark_values.map((benchmark) => {
